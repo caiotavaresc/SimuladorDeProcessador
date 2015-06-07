@@ -1,18 +1,21 @@
 package interfaceControle;
 
 import java.util.Scanner;
-
 import simulador.*;
+import simulador.cpu.*;
 
 public class Controlador {
 
 	Scanner sc;
 	Memoria memory;
+	Uc uc;
 	
 	public Controlador()
 	{
 		sc = new Scanner(System.in);
 		memory = new Memoria();
+		uc = new Uc();
+		Registradores.inicializaRegistradores();
 	}
 	
 	public void adicionaInstrucao()
@@ -31,12 +34,17 @@ public class Controlador {
 	
 	public void executaInstrucoes()
 	{
-		System.out.println("Criando...");
+		uc.cicloDeInstrucao();
 	}
 	
 	public void exibeMemoria()
 	{
 		memory.imprimeMemoria();
+	}
+	
+	public void exibeSinaisDeControle()
+	{
+		memory.imprimeMemoriaBits();
 	}
 	
 	public void telaInicial()
@@ -47,7 +55,8 @@ public class Controlador {
 		System.out.println("2 - Limpar as instruções da memória");
 		System.out.println("3 - Executar as instruções da memória");
 		System.out.println("4 - Visualizar o estado atual das instruções na memória");
-		System.out.println("5 - Sair");
+		System.out.println("5 - Visualizar os sinais de controle da memória");
+		System.out.println("6 - Sair");
 		System.out.println();
 		
 		int saida = sc.nextInt();
@@ -67,6 +76,9 @@ public class Controlador {
 			exibeMemoria();
 			break;
 		case 5:
+			exibeSinaisDeControle();
+			break;
+		case 6:
 			System.out.println("Saindo...");;
 			break;
 		default:

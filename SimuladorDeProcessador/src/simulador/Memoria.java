@@ -1,5 +1,6 @@
 package simulador;
 
+import interfaceControle.TradutorDeInstrucoes;
 import java.util.*;
 
 //A classe controladora será responsável pela interação com o usuário
@@ -12,23 +13,28 @@ public class Memoria {
 	//A ideia é que o usuário digite a instrução e a aplicação a transforme na palavra de controle
 	public List<Integer[]> instrucoesBits;
 	
+	//Referência para o tradutor das instruções
+	public TradutorDeInstrucoes tradutor;
+	
 	//Inicializar a memória
 	public Memoria()
 	{
 		instrucoes = new ArrayList<String>();
 		instrucoesBits = new ArrayList<Integer[]>();
+		tradutor = new TradutorDeInstrucoes(instrucoesBits);
+		
+		//Inicializar os mapas de instruções e registradores
+		TradutorDeInstrucoes.carregarMapaDeInstrucoes();
+		TradutorDeInstrucoes.carregarMapaDeRegistradoresEntrada();
+		TradutorDeInstrucoes.carregarMapaDeRegistradoresSaida();
+		
 	}
 	
-	//Ainda não desenvolvi esse método porque estou estudando a melhor maneira de implementar a arquitetura
-	public void conversorInstrucaoAssembly(String instrucao)
-	{
-		System.out.println("Conversor de instruções assembly");
-	}
-	
-	//Método que escreve a instrução em Assembly
+	//Método que escreve a instrução em Assembly e guarda na memória os sinais traduzidos
 	public void setInstrucao(String instrucao)
 	{
 		instrucoes.add(instrucao);
+		tradutor.traduzInstrucao(instrucao);
 	}
 	
 	//Método que pega a instrução em Assembly
@@ -52,5 +58,26 @@ public class Memoria {
 		
 		while(it.hasNext())
 			System.out.println(it.next());
+	}
+	
+	//------------------------------Métodos de Impressão para memórias de sinais de controle-------------------------//
+	public static <T extends Number> void imprimeArray (T[] arr)
+	{
+		for(int i = 0; i < arr.length; i++)
+			System.out.print(arr[i]);
+
+		System.out.println();
+	}
+	
+	public void imprimeMemoriaBits()
+	{
+		Iterator<Integer[]> it = instrucoesBits.iterator();
+		Integer[] instrucao;
+		
+		while(it.hasNext())
+		{
+			instrucao = it.next();
+			imprimeArray(instrucao);
+		}
 	}
 }

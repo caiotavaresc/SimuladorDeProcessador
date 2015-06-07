@@ -4,6 +4,11 @@ package simulador.cpu;
 //O único registrador que a ULA possui é o AC
 public class Ula {
 	
-	double AC;
+	static Integer[] AC;
 	
+	//Métodos para enviar dados para o barramento interno
+	public void EnviarACBarramento()
+	{
+		BarramentoInterno.setDado(AC);
+	}
 }
