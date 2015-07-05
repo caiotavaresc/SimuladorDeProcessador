@@ -71,7 +71,7 @@ public class Uc {
 		instr[28] = 0;
 		
 		this.interpretadorSinaisDeControle(instr);
-		/*instr = zeraTudo(64);
+		instr = zeraTudo(64);
 		
 		//t3: PC <- PC + 1
 		//    IR <- MBR
@@ -96,10 +96,10 @@ public class Uc {
 		instr = zeraTudo(64);
 		
 		//Abrir a saída do MBR e a entrada do IR
-		instr[11] = 1;
+		instr[10] = 1;
 		instr[13] = 1;
 		
-		this.interpretadorSinaisDeControle(instr);*/
+		this.interpretadorSinaisDeControle(instr);
 	}
 	
 	//Ciclo de Indireção - Operandos que utilizam ponteiros

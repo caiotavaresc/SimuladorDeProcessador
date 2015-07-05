@@ -1,0 +1,8 @@
+diff a/SimuladorDeProcessador/src/simulador/cpu/InterpretadorSinais.java b/SimuladorDeProcessador/src/simulador/cpu/InterpretadorSinais.java	(rejected hunks)
+@@ -1,5 +1,5 @@
+ package simulador.cpu;
+-
++import java.util.Arrays;
+ import simulador.*;
+ 
+ //Essa classe será responsável pela interpretação dos sinais de controle e por sua efetiva execução
