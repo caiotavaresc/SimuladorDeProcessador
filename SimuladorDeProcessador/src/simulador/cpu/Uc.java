@@ -6,15 +6,16 @@ import simulador.*;
 //Porém a função da UC é apenas implementar os ciclos (busca, indireção e execução)
 public class Uc {
 	
-	public static Integer[] PC, MAR, MBR, IR;
+	public static int PC, MAR;
+	public static Object MBR, IR;
 	
 	//Inicializar toods os registradores como zero
 	public Uc()
 	{
-		PC = zeraTudo(64);
-		MAR = zeraTudo(64);
-		MBR = zeraTudo(64);
-		IR = zeraTudo(64);
+		PC = 0;
+		MAR = 0;
+		MBR = null;
+		IR = null;
 	}
 	
 	//Esse método interpretará o conteúdo do sinal de controle e tomará a decisão adequada
@@ -55,6 +56,9 @@ public class Uc {
 		
 		//Jogar o próximo endereço a ser lido no barramento
 		instr[17] = 1;
+		
+		//Do barramento já mandar pra memória
+		instr[20] = 1;
 
 		//Executar a operação e zerar o sinal de controle
 		this.interpretadorSinaisDeControle(instr);
@@ -75,7 +79,7 @@ public class Uc {
 		
 		//t3: PC <- PC + 1
 		//    IR <- MBR
-		
+		/*
 		//Abrir a Saída do PC e a entrada do X
 		instr[8] = 1;
 		instr[14] = 1;
@@ -99,13 +103,7 @@ public class Uc {
 		instr[10] = 1;
 		instr[13] = 1;
 		
-		this.interpretadorSinaisDeControle(instr);
-	}
-	
-	//Ciclo de Indireção - Operandos que utilizam ponteiros
-	public void cicloDeIndirecao()
-	{
-		System.out.println("Ciclo de Indireção");
+		this.interpretadorSinaisDeControle(instr);*/
 	}
 	
 	//Ciclo de Execução - Execução efetiva da memória
@@ -131,7 +129,7 @@ public class Uc {
 	
 	public void EnviarPCBarramento()
 	{
-		BarramentoInterno.setDado(PC);
+		BarramentoInterno.setEndereco(PC);
 	}
 
 	public void EnviarMBRBarramento()

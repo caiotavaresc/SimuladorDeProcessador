@@ -6,10 +6,10 @@ import simulador.cpu.*;
 public class BarramentoDados {
 
 	//Dado que atualizado/pego na memória
-	public static Integer[] Dado;
+	public static Object Dado;
 	
 	//Endereço a ser atualizado/pego na memória
-	public static Integer[] Endereco;
+	public static int Endereco;
 	
 	//Mapa de portas de entrada e saída do barramento
 	public Integer[] barramentoExtEntradas;
@@ -31,12 +31,12 @@ public class BarramentoDados {
 	}
 	
 	//-----------------Método para os sinais de controle inserirem o Dado/Endereço de acesso no barramento
-	public static void setDado(Integer[] dado)
+	public static void setDado(Object dado)
 	{
 		Dado = dado;
 	}
 	
-	public static void setEndereco(Integer[] endereco)
+	public static void setEndereco(int endereco)
 	{
 		Endereco = endereco;
 	}
@@ -48,10 +48,15 @@ public class BarramentoDados {
 		Uc.MBR = Dado;
 	}
 	
-	//Esse procedimento deverá gravar o DADO no ENDEREÇO da memória...
-	//Fica pra mais tarde
-	public void enviarMemoria()
+	//Esse procedimento deverá gravar o DADO no ENDEREÇO da memória
+	public void enviarDadoMemoria()
 	{
-		
+		Memoria.setDado(Dado);
+	}
+	
+	//Esse procedimento envia um endereço para o controle da memória
+	public void enviarEnderecoMemoria()
+	{
+		Memoria.setEndereco(Endereco);
 	}
 }

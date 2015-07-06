@@ -1,0 +1,153 @@
+package simulador.cpu;
+
+import simulador.*;
+
+//Por uma questão de organização, a UC conterá os registradores PC, IR, MAR e MBR
+//Porém a função da UC é apenas implementar os ciclos (busca, indireção e execução)
+public class Uc {
+	
+	public static int PC;
+	public static Integer[] MAR, MBR, IR;
+	
+	//Inicializar toods os registradores como zero
+	public Uc()
+	{
+		PC = 0;
+		MAR = zeraTudo(64);
+		MBR = zeraTudo(64);
+		IR = zeraTudo(64);
+	}
+	
+	//Esse método interpretará o conteúdo do sinal de controle e tomará a decisão adequada
+	public void interpretadorSinaisDeControle(Integer[] sinal)
+	{
+		InterpretadorSinais.setSinal(sinal);
+		InterpretadorSinais.interpretar();
+	}
+
+	//Método do ciclo de instrução - responsável por executar os ciclos
+	public void cicloDeInstrucao()
+	{
+		System.out.println("Ciclo de Instrução:");
+		System.out.println("-------------------");
+		
+		System.out.println("Ciclo de Busca:");
+		cicloDeBusca();
+		/*
+		System.out.println("Ciclo de Indirecao");
+		cicloDeIndirecao();
+		
+		System.out.println("Ciclo de Execução");
+		cicloDeExecucao();
+		*/
+	}
+	
+	//Ciclo de busca - Buscar execuções na memória
+	public void cicloDeBusca()
+	{
+		//Array de instrução
+		Integer[] instr;
+		
+		instr = zeraTudo(64);
+		
+		//t1: MAR <- PC
+		instr[8] = 1; //Controlador de saída de PC
+		instr[12] = 1; //Controlador de entrada de MAR
+		
+		//Jogar o próximo endereço a ser lido no barramento
+		instr[17] = 1;
+
+		//Executar a operação e zerar o sinal de controle
+		this.interpretadorSinaisDeControle(instr);
+		instr = zeraTudo(64);
+		
+		//t2: MBR <- Memória
+		//O barramento já está alimentado com o dado do próximo endereço, basta acessá-lo na memória e colocá-lo no MBR
+		instr[20] = 1;
+		instr[21] = 1;
+		instr[18] = 1;
+		
+		//Marcar ADDRESS Valid e READ
+		instr[27] = 1;
+		instr[28] = 0;
+		
+		this.interpretadorSinaisDeControle(instr);
+		instr = zeraTudo(64);
+		/*
+		//t3: PC <- PC + 1
+		//    IR <- MBR
+		
+		//Abrir a Saída do PC e a entrada do X
+		instr[8] = 1;
+		instr[14] = 1;
+		
+		this.interpretadorSinaisDeControle(instr);
+		instr = zeraTudo(64);
+		
+		//Abrir a saída do X, a saída do AC e a entrada do PC
+		instr[15] = 1;
+		instr[16] = 1;
+		instr[9] = 1;
+		
+		//Sinal de controle da ULA
+		//00001 - Incrementar
+		instr[26] = 1;
+		
+		this.interpretadorSinaisDeControle(instr);
+		instr = zeraTudo(64);
+		
+		//Abrir a saída do MBR e a entrada do IR
+		instr[10] = 1;
+		instr[13] = 1;
+		
+		this.interpretadorSinaisDeControle(instr);*/
+	}
+	
+	//Ciclo de Indireção - Operandos que utilizam ponteiros
+	//Segundo o professor, não há mais a necessidade de implementar o ciclo de indireção
+	public void cicloDeIndirecao()
+	{
+		System.out.println("Ciclo de Indireção");
+	}
+	
+	//Ciclo de Execução - Execução efetiva da memória
+	public void cicloDeExecucao()
+	{
+		System.out.println("Ciclo de Execução");
+	}
+	
+	//Método que retorna um novo array com o tamanho estipulado todo zerado
+	public static Integer[] zeraTudo(int tamanho)
+	{
+		Integer[] arr = new Integer[tamanho];
+		
+		for(int i = 0; i < arr.length; i++)
+			arr[i] = 0;
+		
+		return arr;
+	}
+	
+	//-------------------------------------------------------------------------------------------//
+	//Operação para transferir dados para o barramento
+	//-------------------------------------------------------------------------------------------//
+	
+	public void EnviarPCBarramento()
+	{
+		BarramentoInterno.setEndereco(PC);
+	}
+
+	public void EnviarMBRBarramento()
+	{
+		BarramentoInterno.setDado(MBR);
+	}
+	
+	public void EnviarMBRBarramentoExt()
+	{
+		BarramentoDados.setDado(MBR);
+	}
+	
+	public void EnviarMARBarramentoExt()
+	{
+		BarramentoDados.setEndereco(MAR);
+	}
+}

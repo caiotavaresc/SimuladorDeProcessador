@@ -8,7 +8,8 @@ public class BarramentoInterno {
 	Integer[] SaidaBarramentoInterno;
 	
 	//Dado que circula no barramento
-	static Integer[] Dado;
+	static Object Dado;
+	static int Endereco;
 		
 	//Incializar os arrays de controle
 	public BarramentoInterno()
@@ -37,20 +38,25 @@ public class BarramentoInterno {
 	}
 	
 	//Método que escreve o dado
-	public static void setDado(Integer[] dado)
+	public static void setDado(Object dado)
 	{
 		Dado = dado;
+	}
+	
+	public static void setEndereco(int endereco)
+	{
+		Endereco = endereco;
 	}
 	
 	//-----------------TRANSFERIR OS DADOS DO BARRAMENTO PARA OS REGISTRADORES-------------------//
 	public void enviarBarramentoPC()
 	{
-		Uc.PC = Dado;
+		Uc.PC = Endereco;
 	}
 	
 	public void enviarBarramentoMAR()
 	{
-		Uc.MAR = Dado;
+		Uc.MAR = Endereco;
 	}
 	
 	public void enviarBarramentoIR()
@@ -65,26 +71,26 @@ public class BarramentoInterno {
 	
 	public void enviarBarramentoX()
 	{
-		Registradores.X = Dado;
+		Registradores.X = (Integer) Dado;
 	}
 	
 	public void enviarBarramentoAX()
 	{
-		Registradores.AX = Dado;
+		Registradores.AX = (Integer) Dado;
 	}
 	
 	public void enviarBarramentoBX()
 	{
-		Registradores.BX = Dado;
+		Registradores.BX = (Integer) Dado;
 	}
 	
 	public void enviarBarramentoCX()
 	{
-		Registradores.CX = Dado;
+		Registradores.CX = (Integer) Dado;
 	}
 	
 	public void enviarBarramentoDX()
 	{
-		Registradores.DX = Dado;
+		Registradores.DX = (Integer) Dado;
 	}
 }

@@ -3,15 +3,16 @@ package simulador.cpu;
 //Classe que conterá os registradores AX, BX, CX, DX e X
 public class Registradores {
 	
-	static Integer[] AX, BX, CX, DX, X;
+	static Integer AX, BX, CX, DX, X;
 	
 	//Inicializar os registradores com zero
 	public static void inicializaRegistradores()
 	{
-		AX = Uc.zeraTudo(64);
-		BX = Uc.zeraTudo(64);
-		CX = Uc.zeraTudo(64);
-		DX = Uc.zeraTudo(64);
+		AX = 0;
+		BX = 0;
+		CX = 0;
+		DX = 0;
+		X = 0;
 	}
 	
 	//-------------MÉTODOS QUE ENVIAM O DADO DO BARRAMENTO PARA OS REGISTRADORES----------------

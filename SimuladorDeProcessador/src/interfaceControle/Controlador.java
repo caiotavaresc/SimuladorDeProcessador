@@ -23,13 +23,13 @@ public class Controlador {
 		System.out.println("Por favor digite a instrução");
 		sc.nextLine();
 		String instrucao = sc.nextLine();
-		memory.setInstrucao(instrucao);
+		Memoria.setInstrucao(instrucao);
 		System.out.println("Instrução adicionada com sucesso!");
 	}
 	
 	public void limpaMemoria()
 	{
-		memory.clear();
+		Memoria.clear();
 	}
 	
 	public void executaInstrucoes()
@@ -39,12 +39,7 @@ public class Controlador {
 	
 	public void exibeMemoria()
 	{
-		memory.imprimeMemoria();
-	}
-	
-	public void exibeSinaisDeControle()
-	{
-		memory.imprimeMemoriaBits();
+		Memoria.imprimeMemoria();
 	}
 	
 	public void telaInicial()
@@ -74,9 +69,6 @@ public class Controlador {
 			break;
 		case 4:
 			exibeMemoria();
-			break;
-		case 5:
-			exibeSinaisDeControle();
 			break;
 		case 6:
 			System.out.println("Saindo...");;

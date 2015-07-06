@@ -98,7 +98,17 @@ public class InterpretadorSinais {
 			}
 		}
 		
-		//2 - Barramento Externo
+		//2 - Ações da Memória - Se o endereço é válido
+		if(sinal[27] == 1)
+		{
+			//Leitura
+			if(sinal[28] == 0)
+				Memoria.le();
+			else if(sinal[28] == 1)
+				Memoria.escreve();
+		}
+		
+		//3 - Barramento Externo
 		
 		//Pegar todas as portas que entram no barramento externo
 		for(i = 0; i < barramentoExt.barramentoExtEntradas.length; i++)
@@ -116,7 +126,26 @@ public class InterpretadorSinais {
 					unidadeControle.EnviarMBRBarramentoExt();
 					break;
 				case 21:
-					System.out.println("Leitura da Memória");
+					Memoria.EnviarDadoParaBarramento();
+				}
+			}
+		}		
+		
+		//Pegar todas as portas que SAEM do barramento Externo
+		for(i = 0; i < barramentoExt.barramentoExtSaidas.length; i++)
+		{
+			//Se a porta estiver aberta
+			if(sinal[barramentoExt.barramentoExtSaidas[i]] == 1)
+			{
+				switch(barramentoExt.barramentoExtSaidas[i])
+				{
+				case 18:
+					barramentoExt.enviarBarramentoExtMBR();
+					break;
+				case 20:
+					barramentoExt.enviarEnderecoMemoria();
+					barramentoExt.enviarDadoMemoria();
+					break;
 				}
 			}
 		}

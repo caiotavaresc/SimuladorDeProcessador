@@ -1,0 +1,57 @@
+package simulador;
+
+import simulador.cpu.*;
+
+//Barramento de dados da memória
+public class BarramentoDados {
+
+	//Dado que atualizado/pego na memória
+	public static Integer[] Dado;
+	
+	//Endereço a ser atualizado/pego na memória
+	public static int Endereco;
+	
+	//Mapa de portas de entrada e saída do barramento
+	public Integer[] barramentoExtEntradas;
+	public Integer[] barramentoExtSaidas;
+	
+	//Inicializar controles
+	public BarramentoDados()
+	{
+		barramentoExtEntradas = new Integer[3];
+		
+		barramentoExtEntradas[0] = 17;
+		barramentoExtEntradas[1] = 19;
+		barramentoExtEntradas[2] = 21;
+		
+		barramentoExtSaidas = new Integer[2];
+		
+		barramentoExtSaidas[0] = 20;
+		barramentoExtSaidas[1] = 18;
+	}
+	
+	//-----------------Método para os sinais de controle inserirem o Dado/Endereço de acesso no barramento
+	public static void setDado(Integer[] dado)
+	{
+		Dado = dado;
+	}
+	
+	public static void setEndereco(int endereco)
+	{
+		Endereco = endereco;
+	}
+	
+	//----------------Métodos para inserir transferir valores para as saídas
+	
+	public void enviarBarramentoExtMBR()
+	{
+		Uc.MBR = Dado;
+	}
+	
+	//Esse procedimento deverá gravar o DADO no ENDEREÇO da memória...
+	//Fica pra mais tarde
+	public void enviarMemoria()
+	{
+		
+	}
+}

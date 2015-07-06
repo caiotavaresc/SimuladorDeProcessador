@@ -1,6 +1,7 @@
 package interfaceControle;
 
-import java.util.*;
+import java.util.List;
+import java.util.HashMap;
 import simulador.cpu.*;
 
 //Classe que recebe a String com a instrução e a traduz para a arquitetura
