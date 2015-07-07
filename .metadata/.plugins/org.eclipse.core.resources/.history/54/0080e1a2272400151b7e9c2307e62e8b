@@ -1,0 +1,73 @@
+package simulador;
+import java.util.*;
+
+//A classe controladora será responsável pela interação com o usuário
+public class Memoria {
+	
+	//Memória principal: Guarda tanto dados quanto instruções
+	public static List<Object> memoriaPrincipal;
+	public static Integer Endereco;
+	public static Object Dado;
+	
+	//Inicializar a memória
+	public Memoria()
+	{
+		memoriaPrincipal = new ArrayList<Object>();
+		
+	}
+	
+	//Método que escreve a instrução em Assembly e guarda na memória os sinais traduzidos
+	public static void setInstrucao(String instrucao)
+	{
+		memoriaPrincipal.add(instrucao);
+	}
+	
+	//Método que pega a instrução em Assembly
+	//Acho que não vai servir pra nada, mas já tinha feito...
+	public String getInstrucao(int i)
+	{
+		return (String) memoriaPrincipal.get(i);
+	}
+	
+	//Método que limpa as instruções das memórias
+	public static void clear()
+	{
+		memoriaPrincipal.clear();
+	}
+	
+	//Imprimir as instruções armazenadas em memória
+	public static void imprimeMemoria()
+	{
+		Iterator<Object> it = memoriaPrincipal.iterator();
+		
+		while(it.hasNext())
+			System.out.println(it.next());
+	}
+	
+	//------------------------------MÉTODOS DE TRANSMISSÃO DE DADOS-------------------------------------
+	public static void EnviarDadoParaBarramento()
+	{
+		BarramentoDados.setDado(Dado);
+	}
+	
+	public static void setDado(Object dado)
+	{
+		Dado = dado;
+	}
+	
+	public static void setEndereco(int endereco)
+	{
+		Endereco = endereco;
+	}
+	
+	//---------------------MÉTODOS DE LEITURA E ESCRITA--------------
+	public static void le()
+	{
+		Dado = memoriaPrincipal.get(Endereco);
+	}
+	
+	public static void escreve()
+	{
+		memoriaPrincipal.set(Endereco, Dado);
+	}
+}
