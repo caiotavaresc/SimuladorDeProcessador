@@ -1,50 +1,64 @@
 package simulador;
 import java.util.*;
 
-//A classe controladora ser� respons�vel pela intera��o com o usu�rio
+//A classe controladora sera responsavel pela interacoes com o usuario
 public class Memoria {
 	
-	//Mem�ria principal: Guarda tanto dados quanto instru��es
-	public static List<Object> memoriaPrincipal;
+	//Memoria principal: Guarda tanto dados quanto instrucoes
+	public static List<Object> memoriaPrincipal2;
+	public static Object[] memoriaPrincipal;
+	public static int indice;
 	public static Integer Endereco;
 	public static Object Dado;
 	
-	//Inicializar a mem�ria
+	//Inicializar a memoria
 	public Memoria()
 	{
-		memoriaPrincipal = new ArrayList<Object>(1000);
+		//memoriaPrincipal = new ArrayList<Object>(1000);
+		memoriaPrincipal = new Object[1000];
+		indice = 0;
 		
 	}
 	
-	//M�todo que escreve a instru��o em Assembly e guarda na mem�ria os sinais traduzidos
+	//Metodo que escreve a instrucoes em Assembly e guarda na memoria os sinais traduzidos
 	public static void setInstrucao(String instrucao)
 	{
-		memoriaPrincipal.add(instrucao);
+		//memoriaPrincipal.add(instrucao);
+		memoriaPrincipal[indice++] = instrucao;
 	}
 	
-	//M�todo que pega a instru��o em Assembly
-	//Acho que n�o vai servir pra nada, mas j� tinha feito...
-	public String getInstrucao(int i)
+	//Metodo que pega a instrucao em Assembly
+	//Acho que nao vai servir pra nada, mas ja tinha feito...
+	public static String getInstrucao(int i)
 	{
-		return (String) memoriaPrincipal.get(i);
+		//return (String) memoriaPrincipal.get(i);
+		if(memoriaPrincipal[i] == null)
+			return "";
+		else
+			return (String) memoriaPrincipal[i];
 	}
 	
-	//M�todo que limpa as instru��es das mem�rias
+	//Metodo que limpa as instrucoes das memorias
 	public static void clear()
 	{
-		memoriaPrincipal.clear();
+		//memoriaPrincipal.clear();
+		for(int i = 0; i < memoriaPrincipal.length; i++)
+			memoriaPrincipal[i] = null;
 	}
 	
-	//Imprimir as instru��es armazenadas em mem�ria
+	//Imprimir as instrucoes armazenadas em memoria
 	public static void imprimeMemoria()
 	{
-		Iterator<Object> it = memoriaPrincipal.iterator();
+		//Iterator<Object> it = memoriaPrincipal.iterator();
 		
-		while(it.hasNext())
-			System.out.println(it.next());
+		//while(it.hasNext())
+		//	System.out.println(it.next());
+		
+		for(int i = 0; i < indice; i++)
+			System.out.println(memoriaPrincipal[i]);
 	}
 	
-	//------------------------------M�TODOS DE TRANSMISS�O DE DADOS-------------------------------------
+	//------------------------------METODOS DE TRANSMISS�O DE DADOS-------------------------------------
 	public static void EnviarDadoParaBarramento()
 	{
 		BarramentoDados.setDado(Dado);
@@ -60,14 +74,16 @@ public class Memoria {
 		Endereco = endereco;
 	}
 	
-	//---------------------M�TODOS DE LEITURA E ESCRITA--------------
+	//---------------------METODOS DE LEITURA E ESCRITA--------------
 	public static void le()
 	{
-		Dado = memoriaPrincipal.get(Endereco);
+		//Dado = memoriaPrincipal.get(Endereco);
+		Dado = memoriaPrincipal[Endereco];
 	}
 	
 	public static void escreve()
 	{
-		memoriaPrincipal.set(Endereco, Dado);
+		//memoriaPrincipal.set(Endereco, Dado);
+		memoriaPrincipal[Endereco] = Dado;
 	}
 }

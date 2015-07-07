@@ -10,6 +10,12 @@ public class Uc {
 	public static Object MBR, IR;
 	public static TradutorDeInstrucoes tradutor;
 	
+	//Variável que indica em qual ciclo o programa se encontra
+	public static int myCicle;
+	
+	//Flags Zero e de Sinal
+	public static int flag0, flagSinal;
+	
 	//Inicializar toods os registradores como zero
 	public Uc()
 	{
@@ -18,6 +24,8 @@ public class Uc {
 		MBR = null;
 		IR = null;
 		tradutor = new TradutorDeInstrucoes();
+		
+		myCicle = 0;
 	}
 	
 	//Esse método interpretará o conteúdo do sinal de controle e tomará a decisão adequada
@@ -43,6 +51,7 @@ public class Uc {
 	//Ciclo de busca - Buscar execuções na memória
 	public void cicloDeBusca()
 	{
+		myCicle = 0;
 		//Array de instrução
 		Integer[] instr;
 		
@@ -69,8 +78,8 @@ public class Uc {
 		instr[18] = 1;
 		
 		//Marcar ADDRESS Valid e READ
-		instr[27] = 1;
-		instr[28] = 0;
+		instr[26] = 1;
+		instr[27] = 0;
 		
 		this.interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
@@ -92,7 +101,7 @@ public class Uc {
 		
 		//Sinal de controle da ULA
 		//00001 - Incrementar
-		instr[26] = 1;
+		instr[25] = 1;
 		
 		this.interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
@@ -108,11 +117,18 @@ public class Uc {
 	//Ciclo de Execução - Execução efetiva da memória
 	public void cicloDeExecucao()
 	{
+		myCicle = 2;
+		
 		//1 - TRADUZIR O QUE ESTÁ NO IR PARA SINAIS DE CONTROLE
 		tradutor.traduzInstrucao((String) IR);
 		
 		System.out.println("Registrador A: "+Registradores.AX);
+		System.out.println("Registrador B: "+Registradores.BX);
+		System.out.println("Registrador C: "+Registradores.CX);
 		System.out.println("Registrador D: "+Registradores.DX);
+		
+		System.out.println("Flag Zero: " + flag0);
+		System.out.println("Flag Sinal: " + flagSinal);
 	}
 	
 	//Método que retorna um novo array com o tamanho estipulado todo zerado
@@ -160,5 +176,22 @@ public class Uc {
 	public void EnviarEnderecoBarramento(Integer endereco)
 	{
 		BarramentoInterno.setEndereco(endereco);
+	}
+	
+	//Método que atualiza as flags conforme um dado especificado
+	//Método que atualiza as flags de acordo com o resultado da operação
+	public void AtualizaFlags(Integer valor)
+	{
+		//Flag 0 só é zero se o resultado da expressão for zero
+		if(valor==0)
+			flag0 = 1;
+		else
+			flag0 = 0;
+		
+		//Flag de sinal é 1 se o resultado da expressão for negativo
+		if(valor<0)
+			flagSinal = 1;
+		else
+			flagSinal = 0;
 	}
 }

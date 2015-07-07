@@ -20,6 +20,7 @@ public class InterpretadorSinais {
 	{
 		int constante = 0;
 		
+			constante += (int) sinal[28] * Math.pow(2, 3);
 			constante += (int) sinal[29] * Math.pow(2, 2);
 			constante += sinal[30] * 2;
 			constante += sinal[31];
@@ -45,13 +46,50 @@ public class InterpretadorSinais {
 		//de bits, mas não precisamos ficar fazendo cálculos binários.
 		//Desse modo, estou mandando o valor inteiro na posição 32. Entenda que eles na verdade estariam em todas as
 		//outras posições como binário.
+
 		switch(calculaConstantes())
 		{
 		case 1:
+			//JMP
 			unidadeControle.EnviarDadosBarramento(sinal[32]);
 			break;
 		case 2:
+			//Envia o endereço para a linha de endereço do barramento
 			unidadeControle.EnviarEnderecoBarramento(sinal[32]);
+			break;
+		case 3:
+			//JZ - Somente se a Flag Zero estiver acesa
+			if(Uc.flag0 == 1)
+				unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 4:
+			//JNZ - Somente se a Flag Zero NÃO estiver acesa
+			if(Uc.flag0 == 0)
+				unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 5:
+			//JL - Somente se a Flag Zero NÃO estiver marcada E a Flag de Sinal estiver marcada.
+			if(Uc.flag0 == 0 && Uc.flagSinal == 1)
+				unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 6:
+			//JG - Somente se a Flag Zero NÃO estiver marcada E a Flag de Sinal NÃO estiver marcada
+			if(Uc.flag0 == 0 && Uc.flagSinal == 0)
+				unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 7:
+			//JLE - Somente se a Flag Zero estiver marcada OU a Flag de Sinal estiver marcada.
+			if(Uc.flag0 == 1 || Uc.flagSinal == 1)
+				unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 8:
+			//JGE - Somente se a Flag Zero estiver marcada OU a Flag de sinal estiver desmarcada
+			if(Uc.flag0 == 1 || Uc.flagSinal == 0)
+				unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 9:
+			//Controle interno do processador - Quando for preciso identificar um dado como endereço de memória
+			unidadeControle.EnviarEnderecoBarramento((Integer) BarramentoInterno.Dado);
 			break;
 		}
 		
@@ -97,6 +135,10 @@ public class InterpretadorSinais {
 					break;
 				case 16:
 					Ula.EnviarACBarramento();
+					//Se um dado foi recebido da ULA - As flags da UC são atualizadas com o resultado da expressão
+					//Apenas se a UC estiver no ciclo de execução - o ciclo de busca não altera as flags
+					if(Uc.myCicle == 2)
+						unidadeControle.AtualizaFlags((Integer) BarramentoInterno.Dado);
 				}
 			}
 		}
@@ -141,12 +183,12 @@ public class InterpretadorSinais {
 		}
 		
 		//4 - Ações da Memória - Se o endereço é válido
-		if(sinal[27] == 1)
+		if(sinal[26] == 1)
 		{
 			//Leitura
-			if(sinal[28] == 0)
+			if(sinal[27] == 0)
 				Memoria.le();
-			else if(sinal[28] == 1)
+			else if(sinal[27] == 1)
 				Memoria.escreve();
 		}
 		

@@ -7,29 +7,58 @@ public class TradutorDeInstrucoes {
 	
 	//Mapas que guardarão os números das portas dos registradores e os números das instruções
 	public static HashMap<String, Integer[]> mapaDeInstrucoes = new HashMap<String, Integer[]>();
+	public static HashMap<String, Integer[]> mapaDeInstrucoesJump = new HashMap<String, Integer[]>();
 	public static HashMap<String, Integer> mapaDeRegistradoresEntrada = new HashMap<String, Integer>();
 	public static HashMap<String, Integer> mapaDeRegistradoresSaida = new HashMap<String, Integer>();
 	
-	//Mapa de Instruções estático - Adicionar os sinalizadores de instrução
+	//Mapa de Instruções da ULA estático - Adicionar os sinalizadores de instrução
 	public static void carregarMapaDeInstrucoes()
 	{
-		Integer[] inc = {0, 0, 0, 0, 1};
+		Integer[] inc = {0, 0, 0, 1};
 		mapaDeInstrucoes.put("INC", inc);
 		
-		Integer[] dec = {0, 0, 0, 1, 0};
+		Integer[] dec = {0, 0, 1, 0};
 		mapaDeInstrucoes.put("DEC", dec);
 		
-		Integer[] add = {0, 0, 0, 1, 1};
+		Integer[] add = {0, 0, 1, 1};
 		mapaDeInstrucoes.put("ADD", add);
 		
-		Integer[] sub = {0, 0, 1, 0, 0};
+		Integer[] sub = {0, 1, 0, 0};
 		mapaDeInstrucoes.put("SUB", sub);
 		
-		Integer[] mul = {0, 0, 1, 0, 1};
+		Integer[] mul = {0, 1, 0, 1};
 		mapaDeInstrucoes.put("MUL", mul);
 		
-		Integer[] div = {0, 0, 1, 1, 0};
+		Integer[] div = {0, 1, 1, 0};
 		mapaDeInstrucoes.put("DIV", div);
+		
+		Integer[] cmp = {0, 1, 1, 1};
+		mapaDeInstrucoes.put("CMP", cmp);
+	}
+	
+	//Mapa de Instruções de JUMP estático - Adicionar os sinalizadores de instrução
+	public static void carregarMapaDeInstrucoesJump()
+	{
+		Integer[] jmp = {0, 0, 0, 1};
+		mapaDeInstrucoesJump.put("JMP", jmp);
+		
+		Integer[] jz = {0, 0, 1, 1};
+		mapaDeInstrucoesJump.put("JZ", jz);
+		
+		Integer[] jnz = {0, 1, 0, 0};
+		mapaDeInstrucoesJump.put("JNZ", jnz);
+		
+		Integer[] jl = {0, 1, 0, 1};
+		mapaDeInstrucoesJump.put("JL", jl);
+		
+		Integer[] jg = {0, 1, 1, 0};
+		mapaDeInstrucoesJump.put("JG", jg);
+		
+		Integer[] jle = {0, 1, 1, 1};
+		mapaDeInstrucoesJump.put("JLE", jle);
+		
+		Integer[] jge = {1, 0, 0, 0};
+		mapaDeInstrucoesJump.put("JGE", jge);
 	}
 	
 	//Mapa de registradores estático - Portas de entrada
@@ -54,6 +83,7 @@ public class TradutorDeInstrucoes {
 	public TradutorDeInstrucoes()
 	{
 		carregarMapaDeInstrucoes();
+		carregarMapaDeInstrucoesJump();
 		carregarMapaDeRegistradoresEntrada();
 		carregarMapaDeRegistradoresSaida();
 	}
@@ -173,7 +203,21 @@ public class TradutorDeInstrucoes {
 			//Ainda não vai ser executada operação nenhuma na ULA;
 			
 			//Mandar o segundo operando pro X
-			sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
+			
+			//Nos casos de ADD e SUB, se o segundo operando for um número ou letra minúscula(hexa)
+			//Nos casos de DIV e MUL, o segundo registrador NUNCA será uma letra minúscula ou um número
+			//portanto ele NUNCA entrará aqui
+			if(Character.isDigit(registrador2.charAt(0)) || (Character.isLetter(registrador2.charAt(0)) && Character.isLowerCase(registrador2.charAt(0))))
+			{
+				//Mandar o sinal de controle com o número em questão ao invés do registrador
+				sinal[32] = Integer.parseInt(registrador2, 16);
+				sinal[31] = 1;
+			}
+			else
+			{
+				//Caso contrário, é um ADD de Registrador e, portanto, basta abrir a porta do segundo registrador
+				sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
+			}
 			sinal[14] = 1;
 			
 			InterpretadorSinais.setSinal(sinal);
@@ -274,14 +318,35 @@ public class TradutorDeInstrucoes {
 					registrador2 = registrador2.replaceAll("\\[", "");
 					registrador2 = registrador2.replaceAll("\\]", "");
 					
-					//Pegar o valor em Hexa
-					registrador2 = Integer.toString(Integer.parseInt(registrador2, 16));
-					
-					//1º Sinal - Pôr o endereço no barramento e pedir para enviá-lo à memória
-					sinal[32] = Integer.parseInt(registrador2);
-					
-					//Controle de JMP para pôr o endereço no barramento
-					sinal[30] = 1;
+					//Se o que estiver entre [] for uma letra MAIÚSCULA, é um MOV do ENDEREÇO GUARDADO NO REGISTRADOR
+					//Nesse caso, é necessário pegar o endereço que está guardado no registrador e mandá-lo para a memória
+					if(Character.isLetter(registrador2.charAt(0)) && Character.isUpperCase(registrador2.charAt(0)))
+					{
+						//Mandar o que está no registrador para o barramento
+						sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
+						
+						//Executar sinal
+						InterpretadorSinais.setSinal(sinal);
+						InterpretadorSinais.interpretar();
+						
+						sinal = Uc.zeraTudo(64);
+						
+						//Pedir para jogar o dado que veio do registrador na linha de endereço do barramento
+						//Pra depois ler desse endereçoo
+						sinal[28] = 1;
+						sinal[31] = 1;
+					}
+					else
+					{
+						//Pegar o valor em Hexa
+						registrador2 = Integer.toString(Integer.parseInt(registrador2, 16));
+						
+						//1º Sinal - Pôr o endereço no barramento e pedir para enviá-lo à memória
+						sinal[32] = Integer.parseInt(registrador2);
+						
+						//Controle de JMP para pôr o endereço no barramento
+						sinal[30] = 1;
+					}
 					
 					//Abrir portas do MAR
 					sinal[12] = 1;
@@ -297,8 +362,8 @@ public class TradutorDeInstrucoes {
 					
 					//2º Sinal: Ler da memória e jogar no MBR
 					//Mandar sinal de Address Valid e Leitura para a memória
-					sinal[27] = 1;
-					sinal[28] = 0;
+					sinal[26] = 1;
+					sinal[27] = 0;
 					
 					//Abrir a porta da memória para o barramento externo
 					sinal[21] = 1;
@@ -324,6 +389,7 @@ public class TradutorDeInstrucoes {
 					InterpretadorSinais.interpretar();
 					
 					sinal = Uc.zeraTudo(64);
+					return;
 				}
 			}
 			//Caso contrário, é um endereço de memória
@@ -333,7 +399,43 @@ public class TradutorDeInstrucoes {
 				registrador = registrador.replaceAll("\\[", "");
 				registrador = registrador.replaceAll("\\]", "");
 				
-				registrador = Integer.toString(Integer.parseInt(registrador, 16));
+				//Validar se o conteúdo do operando é um número ou um registrador
+				if(Character.isLetter(registrador.charAt(0)) && Character.isUpperCase(registrador.charAt(0)))
+				{
+					//Se o operando for um registrador - ou seja, se uma letra maiúscula estiver entre os colchetes
+					//Então é preciso guardar o dado no barramento e depois mandá-lo como endereço para escrita no MAR
+					
+					//Abrir a porta de saída do registrador
+					sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+					
+					//Executar o sinal
+					InterpretadorSinais.setSinal(sinal);
+					InterpretadorSinais.interpretar();
+					
+					sinal = Uc.zeraTudo(64);
+					
+					//Controle interno, pedir para inverter o dado com o endereço
+					sinal[28] = 1;
+					sinal[31] = 1;
+				}
+				else
+				{
+					registrador = Integer.toString(Integer.parseInt(registrador, 16));
+					
+					//1 - Mandar o endereço
+					sinal[32] = Integer.parseInt(registrador);
+					sinal[30] = 1;
+				}
+				
+				//Abrir as portas do MAR para deixar o dado no barramento externo
+				sinal[12] = 1;
+				sinal[17] = 1;
+				
+				//Executar instrução
+				InterpretadorSinais.setSinal(sinal);
+				InterpretadorSinais.interpretar();
+				
+				sinal = Uc.zeraTudo(64);
 				
 				//Fazer a mesma validação de cima para o segundo operando agora.
 				//Se o segundo também for uma letra
@@ -343,23 +445,6 @@ public class TradutorDeInstrucoes {
 					if(Character.isLetter(registrador2.charAt(0)) && Character.isUpperCase(registrador2.charAt(0)))
 					{
 						//É um MOV de registrador pra endereço de memória
-						//1 - Mandar o endereço
-						sinal[32] = Integer.parseInt(registrador);
-						sinal[30] = 1;
-						
-						//Abrir as portas do MAR
-						sinal[12] = 1;
-						sinal[17] = 1;
-						
-						//Do MAR já mandar pra memória
-						sinal[20] = 1;
-						
-						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
-						
-						sinal = Uc.zeraTudo(64);
-						
 						//Agora é necessário mandar o dado pra memória
 						
 						//Abrir a porta de saída do registrador 2
@@ -381,8 +466,8 @@ public class TradutorDeInstrucoes {
 						sinal = Uc.zeraTudo(64);
 						
 						//Mandar Escrever o dado na memória
+						sinal[26] = 1;
 						sinal[27] = 1;
-						sinal[28] = 1;
 						
 						//Mandar executar o sinal
 						InterpretadorSinais.setSinal(sinal);
@@ -395,21 +480,6 @@ public class TradutorDeInstrucoes {
 					else 
 					{
 						//É UM MOV DE UMA CONSTANTE PARA UM ENDEREÇO DE MEMÓRIA
-						
-						//1 - Mandar o endereço
-						sinal[32] = Integer.parseInt(registrador);
-						sinal[30] = 1;
-						
-						//Abrir as portas do MAR
-						sinal[12] = 1;
-						sinal[17] = 1;
-						
-						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
-						
-						sinal = Uc.zeraTudo(64);
-						
 						//2 - Mandar o dado
 						sinal[32] = Integer.parseInt(registrador2, 16);
 						
@@ -431,9 +501,9 @@ public class TradutorDeInstrucoes {
 						
 						//3 - ESCREVER O DADO NO ENDEREÇO
 						//Marcar Adress Valid
-						sinal[27] = 1;
+						sinal[26] = 1;
 						//Marcar escrita
-						sinal[28] = 1;
+						sinal[27] = 1;
 						
 						//Mandar executar o sinal
 						InterpretadorSinais.setSinal(sinal);
@@ -442,12 +512,99 @@ public class TradutorDeInstrucoes {
 						sinal = Uc.zeraTudo(64);
 					}
 				}
-				//Senão, é um endereço de memória
-				else
-				{
-					
-				}
 			}
+		}
+		
+		//Verificar se é uma comparação
+		if(res[0].equals("CMP"))
+		{
+			//Registrador 1 -> Recebe o operando
+			registrador = res[1];
+			//Registrador 2 -> Recebe o outro operando
+			registrador2 = res[2];
+			
+			//Marcar a porta de saída do registrador 1 e a porta de entrada do X
+			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+			sinal[14] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Abrir a saída do X pra mandar o primeiro operando pra ULA
+			sinal[15] = 1;
+			
+			//Ainda não vai ser executada operação nenhuma na ULA;
+			
+			//Mandar o segundo operando pro X
+			
+			//Se o segundo operando for um número ou letra minúscula(hexa)
+			if(Character.isDigit(registrador2.charAt(0)) || (Character.isLetter(registrador2.charAt(0)) && Character.isLowerCase(registrador2.charAt(0))))
+			{
+				//Mandar o sinal de controle com o número em questão ao invés do registrador
+				sinal[32] = Integer.parseInt(registrador2, 16);
+				sinal[31] = 1;
+			}
+			else
+			{
+				//Caso contrário, é um CMP de Registrador e, portanto, basta abrir a porta do segundo registrador
+				sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
+			}
+			sinal[14] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Abrir a saída do X pra mandar o segundo operando pra ULA
+			sinal[15] = 1;
+			
+			//Abrir a saída do AC pra mandar o AC pro barramento
+			sinal[16] = 1;
+			
+			//Mandar o sinal de comparação
+			DevolveSinais(sinal, res[0]);
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			return;
+		}
+		
+		//Instruções de Pulo
+		if(res[0].equals("JMP") || res[0].equals("JZ") || res[0].equals("JNZ") || res[0].equals("JL") || res[0].equals("JG") || res[0].equals("JLE") || res[0].equals("JGE"))
+		{
+			registrador = res[1];
+			
+			//Primeiro, colocar o endereço do PC no barramento de dados
+			//Caso não seja necessário efetuar o JUMP, ele deverá receber o que já estava nele
+			sinal[8] = 1;
+			
+			//Executar instrucao
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Colocar o endereço nos bits de endereço
+			sinal[32] = Integer.parseInt(registrador, 16);
+			
+			//Mandar o sinal para colocar o endereço no barramento
+			DevolveSinaisJump(sinal, res[0]);
+			
+			//Abrir a porta do PC
+			sinal[9] = 1;
+				
+			//Executar instrucao
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+				
+			sinal = Uc.zeraTudo(64);
+			return;
 		}
 	}
 	
@@ -459,6 +616,15 @@ public class TradutorDeInstrucoes {
 		sinal[23] = ulaInst[1];
 		sinal[24] = ulaInst[2];
 		sinal[25] = ulaInst[3];
-		sinal[26] = ulaInst[4];
+	}
+	
+	public void DevolveSinaisJump(Integer[] sinal, String instrucao)
+	{
+		Integer[] jumpInst = mapaDeInstrucoesJump.get(instrucao);
+		
+		sinal[28] = jumpInst[0];
+		sinal[29] = jumpInst[1];
+		sinal[30] = jumpInst[2];
+		sinal[31] = jumpInst[3];
 	}
 }

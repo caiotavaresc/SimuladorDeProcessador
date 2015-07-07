@@ -7,9 +7,6 @@ public class Ula {
 	static Integer Dado;
 	static Integer AC;
 	
-	//Flags
-	
-	
 	//Métodos para enviar dados para o barramento interno
 	public static void EnviarACBarramento()
 	{
@@ -27,11 +24,10 @@ public class Ula {
 	{
 		int indicador;
 		
-		indicador = (int) (sinal[22] * Math.pow(2, 4));
-		indicador += (int) (sinal[23] * Math.pow(2, 3));
-		indicador += (int) (sinal[24] * Math.pow(2, 2));
-		indicador += (int) (sinal[25] * 2);
-		indicador += sinal[26];
+		indicador = (int) (sinal[22] * Math.pow(2, 3));
+		indicador += (int) (sinal[23] * Math.pow(2, 2));
+		indicador += (int) (sinal[24] * 2);
+		indicador += sinal[25];
 		
 		//Validações
 		if(indicador == 0)
@@ -87,6 +83,13 @@ public class Ula {
 			Dado = temp%Dado;
 			return;
 		}
+		
+		if(indicador == 7)
+		{
+			//Comparação - é relativamente simples e idêntica à subtração
+			//No Barramento, a UC fará a validação dos dados e ligará as flags
+			AC = AC - Dado;
+			return;
+		}
 	}
-	
 }
