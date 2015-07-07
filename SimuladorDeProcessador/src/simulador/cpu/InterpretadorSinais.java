@@ -10,7 +10,22 @@ public class InterpretadorSinais {
 	static BarramentoDados barramentoExt = new BarramentoDados();
 	static Registradores registradores = new Registradores();
 	static Uc unidadeControle = new Uc();
-	static Ula unidadeLogica = new Ula();
+	
+	//Calcula constantes: Método utilizado para saber qual é o sinal que está sendo passado pelo controle JMP
+	//Esse método é uma abstração, na verdade, o controlador deveria verificar com um IF todas as combinações
+	//diferentes entre as linhas de bits. Por uma questão prática, estamos verificando e somando, mais abaixo
+	//utilizaremos esse resultado para decidir o que fazer com os valores constantes que vêm nas linhas de endereço
+	//do sinal de controle (bits 32 a 63).
+	public static int calculaConstantes()
+	{
+		int constante = 0;
+		
+			constante += (int) sinal[29] * Math.pow(2, 2);
+			constante += sinal[30] * 2;
+			constante += sinal[31];
+		
+		return constante;
+	}
 	
 	//Passar o sinal necessário
 	public static void setSinal(Integer[] MySign)
@@ -22,9 +37,36 @@ public class InterpretadorSinais {
 	public static void interpretar()
 	{
 		int i;
-		//1 Verificar as portas de entrada abertas e jogar os dados nos barramentos
 		
-		//1 - Barramento Interno
+		//1: Mandar os sinais constantes para o barramento
+		//As constantes são valores fixos que ficam nos últimos 32 bits do sinal de controle
+		//Esses bits são utilizados para o cálculo de endereços, jumps e também para passar números diretamente
+		//para um registrador ou endereço de memória. Como o professor disse, a palavra deve ter a quantidade exata
+		//de bits, mas não precisamos ficar fazendo cálculos binários.
+		//Desse modo, estou mandando o valor inteiro na posição 32. Entenda que eles na verdade estariam em todas as
+		//outras posições como binário.
+		switch(calculaConstantes())
+		{
+		case 1:
+			unidadeControle.EnviarDadosBarramento(sinal[32]);
+			break;
+		case 2:
+			unidadeControle.EnviarEnderecoBarramento(sinal[32]);
+			break;
+		}
+		
+		//2: Processar operações da ULA
+		
+		//Se a porta da ULA estiver aberta, transferir o conteúdo de X
+		if(sinal[15]==1)
+			Ula.enviarDadoULA(Registradores.X);
+		
+		//Solicitar operação da ULA
+		Ula.operacao(sinal);
+		
+		//------ Verificar as portas de entrada abertas e jogar os dados nos barramentos
+		
+		//3 - Barramento Interno
 		
 		//Pegar todas as portas que entram no barramento
 		for(i = 0; i < barramentoInt.EntradaBarramentoInterno.length; i++)
@@ -54,7 +96,7 @@ public class InterpretadorSinais {
 					registradores.EnviarDXBarramento();
 					break;
 				case 16:
-					unidadeLogica.EnviarACBarramento();
+					Ula.EnviarACBarramento();
 				}
 			}
 		}
@@ -98,7 +140,7 @@ public class InterpretadorSinais {
 			}
 		}
 		
-		//2 - Ações da Memória - Se o endereço é válido
+		//4 - Ações da Memória - Se o endereço é válido
 		if(sinal[27] == 1)
 		{
 			//Leitura
@@ -108,7 +150,7 @@ public class InterpretadorSinais {
 				Memoria.escreve();
 		}
 		
-		//3 - Barramento Externo
+		//5 - Barramento Externo
 		
 		//Pegar todas as portas que entram no barramento externo
 		for(i = 0; i < barramentoExt.barramentoExtEntradas.length; i++)

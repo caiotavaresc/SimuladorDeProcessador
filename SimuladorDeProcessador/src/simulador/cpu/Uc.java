@@ -8,6 +8,7 @@ public class Uc {
 	
 	public static int PC, MAR;
 	public static Object MBR, IR;
+	public static TradutorDeInstrucoes tradutor;
 	
 	//Inicializar toods os registradores como zero
 	public Uc()
@@ -16,6 +17,7 @@ public class Uc {
 		MAR = 0;
 		MBR = null;
 		IR = null;
+		tradutor = new TradutorDeInstrucoes();
 	}
 	
 	//Esse método interpretará o conteúdo do sinal de controle e tomará a decisão adequada
@@ -33,13 +35,9 @@ public class Uc {
 		
 		System.out.println("Ciclo de Busca:");
 		cicloDeBusca();
-		/*
-		System.out.println("Ciclo de Indirecao");
-		cicloDeIndirecao();
 		
 		System.out.println("Ciclo de Execução");
 		cicloDeExecucao();
-		*/
 	}
 	
 	//Ciclo de busca - Buscar execuções na memória
@@ -79,14 +77,14 @@ public class Uc {
 		
 		//t3: PC <- PC + 1
 		//    IR <- MBR
-		/*
+		
 		//Abrir a Saída do PC e a entrada do X
 		instr[8] = 1;
 		instr[14] = 1;
 		
 		this.interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
-		
+
 		//Abrir a saída do X, a saída do AC e a entrada do PC
 		instr[15] = 1;
 		instr[16] = 1;
@@ -103,13 +101,18 @@ public class Uc {
 		instr[10] = 1;
 		instr[13] = 1;
 		
-		this.interpretadorSinaisDeControle(instr);*/
+		this.interpretadorSinaisDeControle(instr);
+		instr = zeraTudo(64);
 	}
 	
 	//Ciclo de Execução - Execução efetiva da memória
 	public void cicloDeExecucao()
 	{
-		System.out.println("Ciclo de Execução");
+		//1 - TRADUZIR O QUE ESTÁ NO IR PARA SINAIS DE CONTROLE
+		tradutor.traduzInstrucao((String) IR);
+		
+		System.out.println("Registrador A: "+Registradores.AX);
+		System.out.println("Registrador D: "+Registradores.DX);
 	}
 	
 	//Método que retorna um novo array com o tamanho estipulado todo zerado
@@ -130,6 +133,7 @@ public class Uc {
 	public void EnviarPCBarramento()
 	{
 		BarramentoInterno.setEndereco(PC);
+		BarramentoInterno.setDado(PC);
 	}
 
 	public void EnviarMBRBarramento()
@@ -145,5 +149,16 @@ public class Uc {
 	public void EnviarMARBarramentoExt()
 	{
 		BarramentoDados.setEndereco(MAR);
+	}
+	
+	//Métodos genéricos para enviar dados e endereços no caso de constantes - Vide a classe InterpretadorSinais
+	public void EnviarDadosBarramento(Object dado)
+	{
+		BarramentoInterno.setDado(dado);
+	}
+	
+	public void EnviarEnderecoBarramento(Integer endereco)
+	{
+		BarramentoInterno.setEndereco(endereco);
 	}
 }

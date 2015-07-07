@@ -1,0 +1,193 @@
+package simulador.cpu;
+
+import java.util.*;
+
+//Classe que recebe a String com a instrução e a traduz para a arquitetura
+public class TradutorDeInstrucoes {
+	
+	//Mapas que guardarão os números das portas dos registradores e os números das instruções
+	public static HashMap<String, Integer[]> mapaDeInstrucoes = new HashMap<String, Integer[]>();
+	public static HashMap<String, Integer> mapaDeRegistradoresEntrada = new HashMap<String, Integer>();
+	public static HashMap<String, Integer> mapaDeRegistradoresSaida = new HashMap<String, Integer>();
+	
+	//Mapa de Instruções estático - Adicionar os sinalizadores de instrução
+	public static void carregarMapaDeInstrucoes()
+	{
+		Integer[] inc = {0, 0, 0, 0, 1};
+		mapaDeInstrucoes.put("INC", inc);
+		
+		Integer[] dec = {0, 0, 0, 1, 0};
+		mapaDeInstrucoes.put("DEC", dec);
+		
+		Integer[] add = {0, 0, 0, 1, 1};
+		mapaDeInstrucoes.put("ADD", add);
+	}
+	
+	//Mapa de registradores estático - Portas de entrada
+	public static void carregarMapaDeRegistradoresEntrada()
+	{
+		mapaDeRegistradoresEntrada.put("A", 4);
+		mapaDeRegistradoresEntrada.put("B", 5);
+		mapaDeRegistradoresEntrada.put("C", 6);
+		mapaDeRegistradoresEntrada.put("D", 7);
+	}
+	
+	//Mapa de registradores estático - Portas de saída
+	public static void carregarMapaDeRegistradoresSaida()
+	{
+		mapaDeRegistradoresSaida.put("A", 0);
+		mapaDeRegistradoresSaida.put("B", 1);
+		mapaDeRegistradoresSaida.put("C", 2);
+		mapaDeRegistradoresSaida.put("D", 3);
+	}
+	
+	//Inicializar o tradutor com o endereço da lista de instruções (memória de bits)
+	public TradutorDeInstrucoes()
+	{
+		carregarMapaDeInstrucoes();
+		carregarMapaDeRegistradoresEntrada();
+		carregarMapaDeRegistradoresSaida();
+	}
+
+	//Método encarregado de ler e traduzir cada instrução passada na linha de comando
+	public void traduzInstrucao(String instrucao)
+	{	
+		Integer[] sinal = Uc.zeraTudo(64);
+		
+		//1 - Remover todas as vírgulas da instrução
+		instrucao = instrucao.replaceAll(",", "");
+		
+		//fazer um split na instrução
+		String[] res = instrucao.split(" ");
+		String registrador;
+		String registrador2;
+		
+		//Instrução INC
+		if(res[0].equals("INC"))
+		{
+			//Pegar qual é o registrador para incrementar
+			registrador = res[1];
+			
+			//Marcar a porta de saída do registrador como 1
+			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+			
+			//Marcar a porta de entrada do X, para poder alimentar a ULA
+			sinal[14] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Marcar saida do X para alimentar a ULA
+			sinal[15] = 1;
+			
+			//Carregar sinais de controle da operação da ULA
+			DevolveSinais(sinal, res[0]);
+			
+			//Depois de executada a operação, enviar o resultado do AC para o registrador
+			sinal[16] = 1;
+			sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			return;
+		}
+		
+		//instrução DEC
+		if(res[0].equals("DEC"))
+		{
+			//Pegar qual é o registrador para decrementar
+			registrador = res[1];
+			
+			//Marcar porta de saída do registrador como 1
+			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+			
+			//Marcar a porta de entrada do X como 1
+			sinal[14] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Marcar a porta de saída do X para alimentar a ULA
+			sinal[15] = 1;
+			
+			//Carregar sinais de controle da operação da ULA
+			DevolveSinais(sinal, res[0]);
+			
+			//Depois de executada a operação, enviar o AC para o registrador
+			sinal[16] = 1;
+			sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			return;
+		}
+		
+		if(res[0].equals("ADD"))
+		{
+			//Registrador 1 -> Recebe o resultado
+			registrador = res[1];
+			registrador2 = res[2];
+			
+			System.out.println("REG1: " +registrador);
+			System.out.println("REG2: " +registrador2);
+			
+			/*
+			//Marcar a porta de saída do registrador 1 e a porta de entrada do X
+			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+			sinal[14] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Abrir a saída do X pra mandar o primeiro operando pra ULA
+			sinal[15] = 1;
+			
+			//Ainda não vai ser executada operação nenhuma na ULA;
+			
+			//Mandar o segundo operando pro X
+			sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
+			sinal[14] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);
+			
+			//Abrir a saída do X pra mandar o segundo oprando pra ULA
+			sinal[15] = 1;
+			
+			//Mandar o sinal de soma
+			DevolveSinais(sinal, res[0]);
+			
+			//Enviar o AC para o registrador correto
+			sinal[16] = 1;
+			sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
+			
+			InterpretadorSinais.setSinal(sinal);
+			InterpretadorSinais.interpretar();
+			
+			sinal = Uc.zeraTudo(64);*/
+		}
+	}
+	
+	public void DevolveSinais(Integer[] sinal, String instrucao)
+	{
+		Integer[] ulaInst = mapaDeInstrucoes.get(instrucao);
+		
+		sinal[22] = ulaInst[0];
+		sinal[23] = ulaInst[1];
+		sinal[24] = ulaInst[2];
+		sinal[25] = ulaInst[3];
+		sinal[26] = ulaInst[4];
+	}
+}

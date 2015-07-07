@@ -51,7 +51,7 @@ public class BarramentoInterno {
 	//-----------------TRANSFERIR OS DADOS DO BARRAMENTO PARA OS REGISTRADORES-------------------//
 	public void enviarBarramentoPC()
 	{
-		Uc.PC = Endereco;
+		Uc.PC = (Integer) Dado;
 	}
 	
 	public void enviarBarramentoMAR()

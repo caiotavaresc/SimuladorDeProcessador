@@ -1,0 +1,86 @@
+package interfaceControle;
+
+import java.util.List;
+import java.util.HashMap;
+import simulador.cpu.*;
+
+//Classe que recebe a String com a instrução e a traduz para a arquitetura
+public class TradutorDeInstrucoes {
+	public List<Integer[]> instrucoesBits;
+	
+	//Mapas que guardarão os números das portas dos registradores e os números das instruções
+	public static HashMap<String, Integer[]> mapaDeInstrucoes = new HashMap<String, Integer[]>();
+	public static HashMap<String, Integer> mapaDeRegistradoresEntrada = new HashMap<String, Integer>();
+	public static HashMap<String, Integer> mapaDeRegistradoresSaida = new HashMap<String, Integer>();
+	
+	//Mapa de Instruções estático - Adicionar os sinalizadores de instrução
+	public static void carregarMapaDeInstrucoes()
+	{
+		Integer[] inc = {0, 0, 0, 0, 1};
+		mapaDeInstrucoes.put("INC", inc);
+	}
+	
+	//Mapa de registradores estático - Portas de entrada
+	public static void carregarMapaDeRegistradoresEntrada()
+	{
+		mapaDeRegistradoresEntrada.put("A", 4);
+		mapaDeRegistradoresEntrada.put("B", 5);
+		mapaDeRegistradoresEntrada.put("C", 6);
+		mapaDeRegistradoresEntrada.put("D", 7);
+	}
+	
+	//Mapa de registradores estático - Portas de saída
+	public static void carregarMapaDeRegistradoresSaida()
+	{
+		mapaDeRegistradoresSaida.put("A", 0);
+		mapaDeRegistradoresSaida.put("B", 1);
+		mapaDeRegistradoresSaida.put("C", 2);
+		mapaDeRegistradoresSaida.put("D", 3);
+	}
+	
+	//Inicializar o tradutor com o endereço da lista de instruções (memória de bits)
+	public TradutorDeInstrucoes(List<Integer[]> MyinstrucoesBits)
+	{
+		instrucoesBits = MyinstrucoesBits;
+	}
+
+	//Método encarregado de ler e traduzir cada instrução passada na linha de comando
+	public void traduzInstrucao(String instrucao)
+	{	
+		Integer[] sinal = Uc.zeraTudo(64);
+		
+		//1 - Remover todas as vírgulas da instrução
+		instrucao.replaceAll(",", "");
+		
+		//fazer um split na instrução
+		String[] res = instrucao.split(" ");
+		
+		//Por enquanto só tratei a instrução INC
+		if(res[0].equals("INC"))
+		{
+			//Pegar qual é o registrador para incrementar
+			String registrador = res[1];
+			
+			//Marcar a porta de saída do registrador como 1
+			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+			
+			//Marcar a porta de entrada do X, para poder alimentar a ULA
+			sinal[14] = 1;
+			
+			instrucoesBits.add(sinal);
+			sinal = Uc.zeraTudo(64);
+			
+			//Marcar saida do X para alimentar a ULA
+			sinal[15] = 1;
+			
+			//mudar o 27º bit para 1 - Indicar a operação
+			sinal[26] = 1;
+			
+			//Depois de executada a operação, enviar o resultado do AC para o registrador
+			sinal[16] = 1;
+			sinal[mapaDeRegistradoresEntrada.get(res[1])] = 1;
+			
+			instrucoesBits.add(sinal);
+		}
+	}
+}

@@ -1,6 +1,4 @@
 package simulador;
-
-import interfaceControle.TradutorDeInstrucoes;
 import java.util.*;
 
 //A classe controladora será responsável pela interação com o usuário
@@ -14,12 +12,7 @@ public class Memoria {
 	//Inicializar a memória
 	public Memoria()
 	{
-		memoriaPrincipal = new ArrayList<Object>();
-		
-		//Inicializar os mapas de instruções e registradores
-		TradutorDeInstrucoes.carregarMapaDeInstrucoes();
-		TradutorDeInstrucoes.carregarMapaDeRegistradoresEntrada();
-		TradutorDeInstrucoes.carregarMapaDeRegistradoresSaida();
+		memoriaPrincipal = new ArrayList<Object>(1000);
 		
 	}
 	
