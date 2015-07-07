@@ -1,41 +1,41 @@
 package simulador;
 import java.util.*;
 
-//A classe controladora será responsável pela interação com o usuário
+//A classe controladora serï¿½ responsï¿½vel pela interaï¿½ï¿½o com o usuï¿½rio
 public class Memoria {
 	
-	//Memória principal: Guarda tanto dados quanto instruções
+	//Memï¿½ria principal: Guarda tanto dados quanto instruï¿½ï¿½es
 	public static List<Object> memoriaPrincipal;
 	public static Integer Endereco;
 	public static Object Dado;
 	
-	//Inicializar a memória
+	//Inicializar a memï¿½ria
 	public Memoria()
 	{
 		memoriaPrincipal = new ArrayList<Object>(1000);
 		
 	}
 	
-	//Método que escreve a instrução em Assembly e guarda na memória os sinais traduzidos
+	//Mï¿½todo que escreve a instruï¿½ï¿½o em Assembly e guarda na memï¿½ria os sinais traduzidos
 	public static void setInstrucao(String instrucao)
 	{
 		memoriaPrincipal.add(instrucao);
 	}
 	
-	//Método que pega a instrução em Assembly
-	//Acho que não vai servir pra nada, mas já tinha feito...
+	//Mï¿½todo que pega a instruï¿½ï¿½o em Assembly
+	//Acho que nï¿½o vai servir pra nada, mas jï¿½ tinha feito...
 	public String getInstrucao(int i)
 	{
 		return (String) memoriaPrincipal.get(i);
 	}
 	
-	//Método que limpa as instruções das memórias
+	//Mï¿½todo que limpa as instruï¿½ï¿½es das memï¿½rias
 	public static void clear()
 	{
 		memoriaPrincipal.clear();
 	}
 	
-	//Imprimir as instruções armazenadas em memória
+	//Imprimir as instruï¿½ï¿½es armazenadas em memï¿½ria
 	public static void imprimeMemoria()
 	{
 		Iterator<Object> it = memoriaPrincipal.iterator();
@@ -44,7 +44,7 @@ public class Memoria {
 			System.out.println(it.next());
 	}
 	
-	//------------------------------MÉTODOS DE TRANSMISSÃO DE DADOS-------------------------------------
+	//------------------------------Mï¿½TODOS DE TRANSMISSï¿½O DE DADOS-------------------------------------
 	public static void EnviarDadoParaBarramento()
 	{
 		BarramentoDados.setDado(Dado);
@@ -60,7 +60,7 @@ public class Memoria {
 		Endereco = endereco;
 	}
 	
-	//---------------------MÉTODOS DE LEITURA E ESCRITA--------------
+	//---------------------Mï¿½TODOS DE LEITURA E ESCRITA--------------
 	public static void le()
 	{
 		Dado = memoriaPrincipal.get(Endereco);

@@ -1,5 +1,6 @@
 package interfaceControle;
 
+import java.util.List;
 import java.util.Scanner;
 import simulador.*;
 import simulador.cpu.*;
@@ -18,14 +19,23 @@ public class Controlador {
 		Registradores.inicializaRegistradores();
 	}
 	
-	public void adicionaInstrucao()
+	public void adicionaInstrucao(String instrucao)
 	{
-		System.out.println("Por favor digite a instrução");
-		sc.nextLine();
-		String instrucao = sc.nextLine();
+//		System.out.println("Por favor digite a instruï¿½ï¿½o");
+//		sc.nextLine();
+//		String instrucao = sc.nextLine();
 		Memoria.setInstrucao(instrucao);
-		System.out.println("Instrução adicionada com sucesso!");
+//		System.out.println("Instruï¿½ï¿½o adicionada com sucesso!");
 	}
+	
+//	public void adicionaInstrucao()
+//	{
+//		System.out.println("Por favor digite a instruï¿½ï¿½o");
+//		sc.nextLine();
+//		String instrucao = sc.nextLine();
+//		Memoria.setInstrucao(instrucao);
+//		System.out.println("Instruï¿½ï¿½o adicionada com sucesso!");
+//	}
 	
 	public void limpaMemoria()
 	{
@@ -42,15 +52,20 @@ public class Controlador {
 		Memoria.imprimeMemoria();
 	}
 	
+	public List<Object> getMemoria()
+	{
+		return Memoria.memoriaPrincipal;
+	}
+	
 	public void telaInicial()
 	{
 		System.out.println("O que deseja fazer?");
 		System.out.println();
-		System.out.println("1 - Adicionar novas instruções à memória");
-		System.out.println("2 - Limpar as instruções da memória");
-		System.out.println("3 - Executar as instruções da memória");
-		System.out.println("4 - Visualizar o estado atual das instruções na memória");
-		System.out.println("5 - Visualizar os sinais de controle da memória");
+		System.out.println("1 - Adicionar novas instruï¿½ï¿½es ï¿½ memï¿½ria");
+		System.out.println("2 - Limpar as instruï¿½ï¿½es da memï¿½ria");
+		System.out.println("3 - Executar as instruï¿½ï¿½es da memï¿½ria");
+		System.out.println("4 - Visualizar o estado atual das instruï¿½ï¿½es na memï¿½ria");
+		System.out.println("5 - Visualizar os sinais de controle da memï¿½ria");
 		System.out.println("6 - Sair");
 		System.out.println();
 		
@@ -59,7 +74,8 @@ public class Controlador {
 		switch(saida)
 		{
 		case 1:
-			adicionaInstrucao();
+			adicionaInstrucao("Teste");
+//			adicionaInstrucao();
 			break;
 		case 2:
 			limpaMemoria();
@@ -78,13 +94,13 @@ public class Controlador {
 		}
 	}
 	
-	public static void main(String[] args) {
-		
-		Controlador cont = new Controlador();
-		
-		System.out.println("Seja bem-vindo!");
-		
-		while(true)
-			cont.telaInicial();
-	}
+//	public static void main(String[] args) {
+//		
+//		Controlador cont = new Controlador();
+//		
+//		System.out.println("Seja bem-vindo!");
+//		
+//		while(true)
+//			cont.telaInicial();
+//	}
 }
