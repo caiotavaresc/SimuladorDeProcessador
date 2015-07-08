@@ -123,8 +123,9 @@ public class Application {
 				// VALIDAR INSTRUÇÃO - PENDENTE
 				if(instructionAdd.getText().length() > 0){
 					controlador.adicionaInstrucao(instructionAdd.getText());
-					JOptionPane.showMessageDialog(frame, "Instrução adicionada com sucesso");
+					JOptionPane.showMessageDialog(frame, "Instruções adicionadas com sucesso");
 					panelAddInstruction.setVisible(false);
+					instructionAdd.setText("");
 					panelMenu.setVisible(true);
 				}else{
 					JOptionPane.showMessageDialog(frame, "Insira uma instrução válida", "Erro", JOptionPane.WARNING_MESSAGE);
@@ -219,9 +220,13 @@ public class Application {
 					JTextPane textMemoryContent = new JTextPane();
 					textMemoryContent.setBounds(82, 73, 286, 144);
 					panelMemoryList.add(textMemoryContent);
+					String memoryContent = "";
 					
 					for(int i = 0; i < Memoria.indice; i++)
-						textMemoryContent.setText(memoria[i].toString());
+					{
+						memoryContent = memoryContent + memoria[i].toString() + "\n";
+						textMemoryContent.setText(memoryContent);
+					}
 					
 						panelMenu.setVisible(false);
 						panelMemoryList.setVisible(true);

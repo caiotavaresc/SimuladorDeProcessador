@@ -314,8 +314,13 @@ public class Execute {
 	}
 	
 	public void setMemoryContent(Object [] content){
+		String memory = "";
+		
 		for(int i = 0; i < Memoria.indice; i++)
-			textMemoryContent.setText(content[i].toString());
+		{
+			memory = memory + content[i].toString() + "\n";
+			textMemoryContent.setText(memory);
+		}
 	}
 	
 	public void updateStates(){

@@ -207,7 +207,7 @@ public class TradutorDeInstrucoes {
 			//Nos casos de ADD e SUB, se o segundo operando for um número ou letra minúscula(hexa)
 			//Nos casos de DIV e MUL, o segundo registrador NUNCA será uma letra minúscula ou um número
 			//portanto ele NUNCA entrará aqui
-			if(Character.isDigit(registrador2.charAt(0)) || (Character.isLetter(registrador2.charAt(0)) && Character.isLowerCase(registrador2.charAt(0))))
+			if(Character.isDigit(registrador2.charAt(0)) || (Character.isLetter(registrador2.charAt(0)) && Character.isLowerCase(registrador2.charAt(0))) || registrador2.charAt(0) == '-')
 			{
 				//Mandar o sinal de controle com o número em questão ao invés do registrador
 				sinal[32] = Integer.parseInt(registrador2, 16);
@@ -233,7 +233,13 @@ public class TradutorDeInstrucoes {
 			
 			//Enviar o AC para o registrador correto
 			sinal[16] = 1;
-			sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
+			
+			//Se for uma divisão, o resto é enviado primeiro, para o registrador D
+			//Caso contrário, utiliza-se o operando da expressão mesmo
+			if(res[0].equals("DIV"))
+				sinal[mapaDeRegistradoresEntrada.get("D")] = 1;
+			else
+				sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 			
 			InterpretadorSinais.setSinal(sinal);
 			InterpretadorSinais.interpretar();
@@ -242,13 +248,14 @@ public class TradutorDeInstrucoes {
 			
 			//Como na divisão é necessário enviar também o resto,
 			//Esse sinal de controle só será enviado na divisão
-			//O resto fica armazenado na ULA e vai para o AC logo depois que o quociente sai
-			//Basta enviar o conteúdo do AC para o registrador D
+			//O resto é enviado primeiro para o D (veja o código acima)
+			//O resultado da divisão fica armazenado na ULA, e depois é enviado para o barramento, sempre para o registrador A
+			//Essa foi uma manobra para que o cálculo do resto não influísse no resultado das flags
 			if(res[0].equals("DIV"))
 			{
-				//Enviar o resto para o registrador D
+				//Enviar o resultado para o registrador A
 				sinal[16] = 1;
-				sinal[mapaDeRegistradoresEntrada.get("D")] = 1;
+				sinal[mapaDeRegistradoresEntrada.get("A")] = 1;
 				
 				InterpretadorSinais.setSinal(sinal);
 				InterpretadorSinais.interpretar();
@@ -270,8 +277,8 @@ public class TradutorDeInstrucoes {
 			//SE O PRIMEIRO OPERANDO FOR UM REGISTRADOR - Primeira posição é LETRA
 			if(Character.isLetter(registrador.charAt(0)))
 			{
-				//Se o segundo também for uma letra
-				if(Character.isLetter(registrador2.charAt(0)) || Character.isDigit(registrador2.charAt(0)))
+				//Se o segundo também for uma letra ou então um número
+				if(Character.isLetter(registrador2.charAt(0)) || Character.isDigit(registrador2.charAt(0)) || registrador2.charAt(0) == '-')
 				{
 					//E se a segunda letra também iniciar como maiúscula
 					if(Character.isLetter(registrador2.charAt(0)) && Character.isUpperCase(registrador2.charAt(0)))
@@ -523,10 +530,24 @@ public class TradutorDeInstrucoes {
 			//Registrador 2 -> Recebe o outro operando
 			registrador2 = res[2];
 			
-			//Marcar a porta de saída do registrador 1 e a porta de entrada do X
-			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
-			sinal[14] = 1;
+			//Se o primeiro operando for um número ou uma letra minúscula (hexa)
+			if(Character.isDigit(registrador.charAt(0)) || (Character.isLetter(registrador.charAt(0)) && Character.isLowerCase(registrador.charAt(0))) || registrador.charAt(0) == '-')
+			{
+				//Mandar o número de entrada para o barramento
+				sinal[32] = Integer.parseInt(registrador, 16);
+				
+				//Mandar o sinal para colocar o número no barramento de dados
+				sinal[31] = 1;
+			}
+			else
+			{
+				//Senão, é um registrador mesmo
+				//Marcar a porta de saída do registrador 1
+				sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
+			}
 			
+			//Marcar a porta de entrada do X
+			sinal[14] = 1;
 			InterpretadorSinais.setSinal(sinal);
 			InterpretadorSinais.interpretar();
 			
@@ -540,7 +561,7 @@ public class TradutorDeInstrucoes {
 			//Mandar o segundo operando pro X
 			
 			//Se o segundo operando for um número ou letra minúscula(hexa)
-			if(Character.isDigit(registrador2.charAt(0)) || (Character.isLetter(registrador2.charAt(0)) && Character.isLowerCase(registrador2.charAt(0))))
+			if(Character.isDigit(registrador2.charAt(0)) || (Character.isLetter(registrador2.charAt(0)) && Character.isLowerCase(registrador2.charAt(0))) || registrador2.charAt(0) == '-')
 			{
 				//Mandar o sinal de controle com o número em questão ao invés do registrador
 				sinal[32] = Integer.parseInt(registrador2, 16);

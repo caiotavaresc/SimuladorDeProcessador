@@ -20,7 +20,11 @@ public class Controlador {
 	
 	public void adicionaInstrucao(String instrucao)
 	{
-		Memoria.setInstrucao(instrucao);
+		//Como as instruções podem vir com mais de uma linha, é preciso quebrá-las
+		String[] instrucoes = instrucao.split("\n");
+		
+		for(int i = 0; i < instrucoes.length; i++)
+			Memoria.setInstrucao(instrucoes[i]);
 	}
 	
 	public void adicionaInstrucao()
@@ -89,7 +93,7 @@ public class Controlador {
 		}
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		Controlador cont = new Controlador();
 		
@@ -97,5 +101,5 @@ public class Controlador {
 		
 		while(true)
 			cont.telaInicial();
-	}
+	}*/
 }

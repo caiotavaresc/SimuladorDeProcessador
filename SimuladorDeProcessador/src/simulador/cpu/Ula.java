@@ -79,8 +79,8 @@ public class Ula {
 			int temp = AC;
 			
 			//Dividir o que está em AC pelo que está em DADO e colocar o resultado em AC
-			AC = AC/Dado;
-			Dado = temp%Dado;
+			AC = AC%Dado;
+			Dado = temp/Dado;
 			return;
 		}
 		
