@@ -28,6 +28,8 @@ public class Application {
 	private JFrame frame;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	
+	private static Execute execute;
+	
 	private JPanel panelAddInstruction;
 	private JPanel panelMenu;
 	private JPanel panelMemoryList;
@@ -46,6 +48,13 @@ public class Application {
 				try {
 					Application window = new Application();
 					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				try {
+					execute = new Execute();
+//					execute.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -201,6 +210,8 @@ public class Application {
 					controlador.limpaMemoria();
 					break;
 				case 3:
+					setExecuteScreen();
+					execute.frame.setVisible(true);
 					break;
 				case 4:
 					Object[] memoria = controlador.getMemoria();
@@ -212,8 +223,8 @@ public class Application {
 					for(int i = 0; i < Memoria.indice; i++)
 						textMemoryContent.setText(memoria[i].toString());
 					
-					panelMenu.setVisible(false);
-					panelMemoryList.setVisible(true);
+						panelMenu.setVisible(false);
+						panelMemoryList.setVisible(true);
 					break;
 				case 5:
 					break;
@@ -222,6 +233,7 @@ public class Application {
 				}
 			}
 		});
+		
 		btnAvanar.setBounds(233, 244, 117, 29);
 		panelMenu.add(btnAvanar);
 	
@@ -230,4 +242,9 @@ public class Application {
 	public void setOption(int option){
 		this.option = option;
 	}
+	
+	public void setExecuteScreen(){
+		execute.setMemoryContent(controlador.getMemoria());		
+	}
+	
 }

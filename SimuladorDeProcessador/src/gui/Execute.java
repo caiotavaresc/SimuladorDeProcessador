@@ -15,39 +15,45 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
+import interfaceControle.*;
+import simulador.*;
+import simulador.cpu.*;
 
 public class Execute {
 
-	private JFrame frame;
-	private JTextField verifyDataInput;
-	private JTextField verifyDataResult;
-	private JTextField textRegisterA;
-	private JTextField textRegisterB;
-	private JTextField textRegisterC;
-	private JTextField textRegisterD;
-	private JTextField textCpuMAR;
-	private JTextField textCpuMBR;
-	private JTextField textCpuPC;
-	private JTextField textCpuIR;
-	private JTextField textFlagZero;
-	private JTextField textFlagSinal;
-
+	public JFrame frame;
+	public JTextField verifyDataInput;
+	public JTextField verifyDataResult;
+	public JTextField textRegisterA;
+	public JTextField textRegisterB;
+	public JTextField textRegisterC;
+	public JTextField textRegisterD;
+	public JTextField textCpuMAR;
+	public JTextField textCpuMBR;
+	public JTextField textCpuPC;
+	public JTextField textCpuIR;
+	public JTextField textFlagZero;
+	public JTextField textFlagSinal;
+	public JTextArea textMemoryContent;
+	public JTextPane textMicroinstructions;
+	public JTextPane textControlSinal;
+	public JButton btnVoltarFrame;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Execute window = new Execute();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Execute window = new Execute();
+//					window.frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
+	
 	/**
 	 * Create the application.
 	 */
@@ -60,12 +66,12 @@ public class Execute {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 771, 430);
+		frame.setBounds(100, 100, 771, 469);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JPanel panelExecute = new JPanel();
-		panelExecute.setBounds(0, 0, 771, 408);
+		panelExecute.setBounds(0, 0, 771, 447);
 		frame.getContentPane().add(panelExecute);
 		panelExecute.setLayout(null);
 		
@@ -96,6 +102,9 @@ public class Execute {
 		JButton btnVerifyDataSend = new JButton("Ir");
 		btnVerifyDataSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String result = verifyData(verifyDataInput.getText());
+				System.out.println("Input = "+result);
+				verifyDataResult.setText(result);
 			}
 		});
 		btnVerifyDataSend.setBounds(147, 6, 48, 29);
@@ -106,6 +115,7 @@ public class Execute {
 		verifyDataPanel.add(lblDado);
 		
 		verifyDataResult = new JTextField();
+		verifyDataResult.setEditable(false);
 		verifyDataResult.setBounds(74, 46, 115, 28);
 		verifyDataPanel.add(verifyDataResult);
 		verifyDataResult.setColumns(10);
@@ -113,10 +123,6 @@ public class Execute {
 		JLabel lblNewLabel = new JLabel("Verificar Dado");
 		lblNewLabel.setBounds(25, 286, 105, 16);
 		panelExecute.add(lblNewLabel);
-		
-		JTextPane textPane = new JTextPane();
-		textPane.setBounds(22, 87, 195, 175);
-		panelExecute.add(textPane);
 		
 		JLabel lblExecutarInstruesDa = new JLabel("Executar Instru\u00E7\u00F5es da Mem\u00F3ria");
 		lblExecutarInstruesDa.setBounds(239, 6, 317, 27);
@@ -254,7 +260,7 @@ public class Execute {
 		lblMicroinstrues.setBounds(241, 225, 133, 16);
 		panelExecute.add(lblMicroinstrues);
 		
-		JTextPane textMicroinstructions = new JTextPane();
+		textMicroinstructions = new JTextPane();
 		textMicroinstructions.setBounds(241, 253, 230, 136);
 		panelExecute.add(textMicroinstructions);
 		
@@ -263,16 +269,93 @@ public class Execute {
 		lblSinaisDeControle.setBounds(494, 225, 150, 16);
 		panelExecute.add(lblSinaisDeControle);
 		
-		JTextPane textControlSinal = new JTextPane();
+		textControlSinal = new JTextPane();
 		textControlSinal.setBounds(494, 253, 255, 136);
 		panelExecute.add(textControlSinal);
 		
 		JButton btnLimparMicro = new JButton("Limpar");
+		btnLimparMicro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textMicroinstructions.setText("");
+			}
+		});
 		btnLimparMicro.setBounds(378, 221, 93, 29);
 		panelExecute.add(btnLimparMicro);
 		
 		JButton buttonLimparSignal = new JButton("Limpar");
+		buttonLimparSignal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textControlSinal.setText("");
+			}
+		});
 		buttonLimparSignal.setBounds(656, 221, 93, 29);
 		panelExecute.add(buttonLimparSignal);
+		
+		textMemoryContent = new JTextArea();
+		textMemoryContent.setEditable(false);
+		textMemoryContent.setBounds(25, 89, 195, 174);
+		panelExecute.add(textMemoryContent);
+		
+		btnVoltarFrame = new JButton("Voltar");
+		btnVoltarFrame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.setVisible(false);
+			}
+		});
+		btnVoltarFrame.setBounds(333, 412, 117, 29);
+		panelExecute.add(btnVoltarFrame);
+	}
+	
+	public String verifyData(String input){
+		String result = Memoria.getInstrucao(Integer.parseInt(input, 16));
+		return result;
+	}
+	
+	public void setMemoryContent(Object [] content){
+		for(int i = 0; i < Memoria.indice; i++)
+			textMemoryContent.setText(content[i].toString());
+	}
+	
+	public void updateStates(){
+		// REGISTRADORES
+		int tempAx = Registradores.getAX();
+		textRegisterA.setText(String.valueOf(tempAx));
+
+		int tempBx = Registradores.getBX();
+		textRegisterB.setText(String.valueOf(tempBx));
+		
+		int tempCx = Registradores.getCX();
+		textRegisterC.setText(String.valueOf(tempCx));
+		
+		int tempDx = Registradores.getDX();
+		textRegisterD.setText(String.valueOf(tempDx));
+		
+		// UC
+		int tempMAR = Uc.MAR;
+		textCpuMAR.setText(String.valueOf(tempMAR));
+		
+		textCpuMBR.setText(Uc.MBR.toString());
+		
+		int tempPC = Uc.PC;
+		textCpuPC.setText(String.valueOf(tempPC));
+		
+		textCpuIR.setText(Uc.IR.toString());
+		
+		// Flags
+		int tempFlag = Uc.flag0;
+		textFlagZero.setText(String.valueOf(tempFlag));
+		
+		int tempFlagSignal = Uc.flag0;
+		textFlagSinal.setText(String.valueOf(tempFlagSignal));
+	}
+	public void insertMicroinstrucoesAppend(String instrucao){
+		String current = textMicroinstructions.getText();
+		current += (instrucao + "\n");
+		textMicroinstructions.setText(current);
+	}
+	public void insertSinaisAppend(String sinal){
+		String current = textControlSinal.getText();
+		current += (sinal + "\n");
+		textControlSinal.setText(current);
 	}
 }

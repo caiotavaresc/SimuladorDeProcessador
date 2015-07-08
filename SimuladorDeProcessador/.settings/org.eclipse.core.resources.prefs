@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/gui/Application.java=UTF-8
+encoding//src/gui/Execute.java=UTF-8
 encoding//src/interfaceControle/Controlador.java=UTF-8
 encoding//src/simulador/Memoria.java=UTF-8
+encoding//src/simulador/cpu/Registradores.java=UTF-8
