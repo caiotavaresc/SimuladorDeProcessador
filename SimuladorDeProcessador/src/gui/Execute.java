@@ -62,12 +62,12 @@ public class Execute {
 	//Método que inicializa o conteúdo do frame
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 793, 469);
+		frame.setBounds(100, 100, 849, 521);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JPanel panelExecute = new JPanel();
-		panelExecute.setBounds(0, 0, 771, 447);
+		panelExecute.setBounds(39, 26, 771, 447);
 		frame.getContentPane().add(panelExecute);
 		panelExecute.setLayout(null);
 		
@@ -105,7 +105,7 @@ public class Execute {
 				verifyDataResult.setText(result);
 			}
 		});
-		btnVerifyDataSend.setBounds(147, 6, 48, 29);
+		btnVerifyDataSend.setBounds(160, 6, 29, 29);
 		verifyDataPanel.add(btnVerifyDataSend);
 		
 		JLabel lblDado = new JLabel("Dado");
@@ -139,21 +139,25 @@ public class Execute {
 		panelRegister.setLayout(null);
 		
 		textRegisterA = new JTextField();
+		textRegisterA.setEditable(false);
 		textRegisterA.setBounds(24, 5, 104, 28);
 		panelRegister.add(textRegisterA);
 		textRegisterA.setColumns(10);
 		
 		textRegisterB = new JTextField();
+		textRegisterB.setEditable(false);
 		textRegisterB.setBounds(24, 35, 104, 28);
 		panelRegister.add(textRegisterB);
 		textRegisterB.setColumns(10);
 		
 		textRegisterC = new JTextField();
+		textRegisterC.setEditable(false);
 		textRegisterC.setBounds(24, 64, 104, 28);
 		panelRegister.add(textRegisterC);
 		textRegisterC.setColumns(10);
 		
 		textRegisterD = new JTextField();
+		textRegisterD.setEditable(false);
 		textRegisterD.setBounds(24, 92, 105, 28);
 		panelRegister.add(textRegisterD);
 		textRegisterD.setColumns(10);
@@ -180,21 +184,25 @@ public class Execute {
 		panelExecute.add(panelCpu);
 		
 		textCpuMAR = new JTextField();
+		textCpuMAR.setEditable(false);
 		textCpuMAR.setColumns(10);
 		textCpuMAR.setBounds(50, 5, 104, 28);
 		panelCpu.add(textCpuMAR);
 		
 		textCpuMBR = new JTextField();
+		textCpuMBR.setEditable(false);
 		textCpuMBR.setColumns(10);
 		textCpuMBR.setBounds(50, 35, 104, 28);
 		panelCpu.add(textCpuMBR);
 		
 		textCpuPC = new JTextField();
+		textCpuPC.setEditable(false);
 		textCpuPC.setColumns(10);
 		textCpuPC.setBounds(50, 64, 104, 28);
 		panelCpu.add(textCpuPC);
 		
 		textCpuIR = new JTextField();
+		textCpuIR.setEditable(false);
 		textCpuIR.setColumns(10);
 		textCpuIR.setBounds(49, 92, 105, 28);
 		panelCpu.add(textCpuIR);
@@ -284,6 +292,7 @@ public class Execute {
 		panelExecute.add(lblMicroinstrues);
 		
 		textMicroinstructions = new JTextPane();
+		textMicroinstructions.setEditable(false);
 		textMicroinstructions.setBounds(241, 253, 230, 136);
 		
 		//Inserir scroll vertical
@@ -299,6 +308,7 @@ public class Execute {
 		panelExecute.add(lblSinaisDeControle);
 		
 		textControlSinal = new JTextPane();
+		textControlSinal.setEditable(false);
 		textControlSinal.setBounds(494, 253, 255, 136);
 		
 		//Inserir scroll vertical
