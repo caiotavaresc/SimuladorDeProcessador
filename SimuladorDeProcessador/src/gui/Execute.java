@@ -66,7 +66,7 @@ public class Execute {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 771, 469);
+		frame.setBounds(100, 100, 793, 469);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -89,9 +89,9 @@ public class Execute {
 		lblEndereo.setBounds(6, 6, 57, 16);
 		verifyDataPanel.add(lblEndereo);
 		
-		JLabel lblEmDecimal = new JLabel("Em Decimal");
-		lblEmDecimal.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
-		lblEmDecimal.setBounds(6, 21, 62, 16);
+		JLabel lblEmDecimal = new JLabel("Hexadecimal");
+		lblEmDecimal.setFont(new Font("Lucida Grande", Font.PLAIN, 9));
+		lblEmDecimal.setBounds(6, 21, 79, 13);
 		verifyDataPanel.add(lblEmDecimal);
 		
 		verifyDataInput = new JTextField();
@@ -233,11 +233,13 @@ public class Execute {
 		panelExecute.add(panelFlag);
 		
 		textFlagZero = new JTextField();
+		textFlagZero.setEditable(false);
 		textFlagZero.setColumns(10);
 		textFlagZero.setBounds(50, 5, 104, 28);
 		panelFlag.add(textFlagZero);
 		
 		textFlagSinal = new JTextField();
+		textFlagSinal.setEditable(false);
 		textFlagSinal.setColumns(10);
 		textFlagSinal.setBounds(50, 35, 104, 28);
 		panelFlag.add(textFlagSinal);
