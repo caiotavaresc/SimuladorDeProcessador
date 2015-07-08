@@ -37,6 +37,7 @@ public class InterpretadorSinais {
 	//Método coração - INTERPRETAR
 	public static void interpretar()
 	{
+		
 		int i;
 		
 		//1: Mandar os sinais constantes para o barramento
@@ -58,31 +59,49 @@ public class InterpretadorSinais {
 			unidadeControle.EnviarEnderecoBarramento(sinal[32]);
 			break;
 		case 3:
+			//Exibir microinstrução a ser executada
+			Uc.micro = Uc.micro + "IF(flagZ==1)\n         ";
+			
 			//JZ - Somente se a Flag Zero estiver acesa
 			if(Uc.flag0 == 1)
 				unidadeControle.EnviarDadosBarramento(sinal[32]);
 			break;
 		case 4:
+			//Exibir microinstrução a ser executada
+			Uc.micro = Uc.micro + "IF(flagZ==0)\n         ";			
+			
 			//JNZ - Somente se a Flag Zero NÃO estiver acesa
 			if(Uc.flag0 == 0)
 				unidadeControle.EnviarDadosBarramento(sinal[32]);
 			break;
 		case 5:
+			//Exibir microinstrução a ser executada
+			Uc.micro = Uc.micro + "IF(flagZ==0 AND flagSign==1)\n         ";			
+			
 			//JL - Somente se a Flag Zero NÃO estiver marcada E a Flag de Sinal estiver marcada.
 			if(Uc.flag0 == 0 && Uc.flagSinal == 1)
 				unidadeControle.EnviarDadosBarramento(sinal[32]);
 			break;
 		case 6:
+			//Exibir microinstrução a ser executada
+			Uc.micro = Uc.micro + "IF(flagZ==0 AND flagSign==0)\n         ";			
+			
 			//JG - Somente se a Flag Zero NÃO estiver marcada E a Flag de Sinal NÃO estiver marcada
 			if(Uc.flag0 == 0 && Uc.flagSinal == 0)
 				unidadeControle.EnviarDadosBarramento(sinal[32]);
 			break;
 		case 7:
+			//Exibir microinstrução a ser executada
+			Uc.micro = Uc.micro + "IF(flagZ==1 OR flagSign==1)\n         ";			
+			
 			//JLE - Somente se a Flag Zero estiver marcada OU a Flag de Sinal estiver marcada.
 			if(Uc.flag0 == 1 || Uc.flagSinal == 1)
 				unidadeControle.EnviarDadosBarramento(sinal[32]);
 			break;
 		case 8:
+			//Exibir microinstrução a ser executada
+			Uc.micro = Uc.micro + "IF(flagZ==1 OR flagSign==0)\n         ";
+			
 			//JGE - Somente se a Flag Zero estiver marcada OU a Flag de sinal estiver desmarcada
 			if(Uc.flag0 == 1 || Uc.flagSinal == 0)
 				unidadeControle.EnviarDadosBarramento(sinal[32]);

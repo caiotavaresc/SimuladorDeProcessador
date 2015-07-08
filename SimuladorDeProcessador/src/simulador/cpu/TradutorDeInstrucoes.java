@@ -107,16 +107,22 @@ public class TradutorDeInstrucoes {
 			//Pegar qual é o registrador para incrementar
 			registrador = res[1];
 			
+			//Inserir a microinstrução que manda o dado pro X
+			Uc.insertMicroAppend("     t1: X = " + registrador);
+			
 			//Marcar a porta de saída do registrador como 1
 			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
 			
 			//Marcar a porta de entrada do X, para poder alimentar a ULA
 			sinal[14] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
+			
+			//Inserir a microinstrução que calcula o valor de AC e joga no registrador
+			Uc.insertMicroAppend("     t2: (ULA) AC = X + 1");
+			Uc.insertMicroAppend("         " + registrador + " = AC");
 			
 			//Marcar saida do X para alimentar a ULA
 			sinal[15] = 1;
@@ -128,8 +134,7 @@ public class TradutorDeInstrucoes {
 			sinal[16] = 1;
 			sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			return;
@@ -141,16 +146,22 @@ public class TradutorDeInstrucoes {
 			//Pegar qual é o registrador para decrementar
 			registrador = res[1];
 			
+			//Inserir a microinstrução que manda o dado pro X
+			Uc.insertMicroAppend("     t1: X = " + registrador);
+			
 			//Marcar porta de saída do registrador como 1
 			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
 			
 			//Marcar a porta de entrada do X como 1
 			sinal[14] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
+			
+			//Inserir a microinstrução que calcula o valor de AC e joga no registrador
+			Uc.insertMicroAppend("     t2: (ULA) AC = X - 1");
+			Uc.insertMicroAppend("         " + registrador + " = AC");
 			
 			//Marcar a porta de saída do X para alimentar a ULA
 			sinal[15] = 1;
@@ -162,8 +173,7 @@ public class TradutorDeInstrucoes {
 			sinal[16] = 1;
 			sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			return;
@@ -188,12 +198,14 @@ public class TradutorDeInstrucoes {
 			registrador2 = res[2];
 			}
 			
+			//Inserir a microinstrução que manda o primeiro operando para a ULA
+			Uc.insertMicroAppend("     t1: X = " + registrador);
+			
 			//Marcar a porta de saída do registrador 1 e a porta de entrada do X
 			sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
 			sinal[14] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			
@@ -220,29 +232,36 @@ public class TradutorDeInstrucoes {
 			}
 			sinal[14] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			//Imprimir as microinstruções:
+			Uc.insertMicroAppend("     t2: (ULA) AC = X");
+			Uc.insertMicroAppend("         X = " + registrador2);
+			
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
+			
+			//Imprimir cálculo
+			Uc.micro = Uc.micro + "     t3: (ULA) AC = AC ";
 			
 			//Abrir a saída do X pra mandar o segundo oprando pra ULA
 			sinal[15] = 1;
 			
-			//Mandar o sinal de soma
+			//Mandar o sinal da operação
 			DevolveSinais(sinal, res[0]);
 			
 			//Enviar o AC para o registrador correto
 			sinal[16] = 1;
 			
-			//Se for uma divisão, o resto é enviado primeiro, para o registrador D
-			//Caso contrário, utiliza-se o operando da expressão mesmo
+			//Se for uma divisão, o registrador correto para enviar o RESTO é o D
 			if(res[0].equals("DIV"))
 				sinal[mapaDeRegistradoresEntrada.get("D")] = 1;
 			else
 				sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
+			
+			//Terminar de colocar o t3 - o registrador recebe o resultado
+			Uc.insertMicroAppend("          " + registrador + " = AC");
 			
 			sinal = Uc.zeraTudo(64);
 			
@@ -253,12 +272,15 @@ public class TradutorDeInstrucoes {
 			//Essa foi uma manobra para que o cálculo do resto não influísse no resultado das flags
 			if(res[0].equals("DIV"))
 			{
+				//Imprimir microinstrução do resto da divisão
+				Uc.insertMicroAppend("     t4: AC = AC % X");
+				Uc.insertMicroAppend("         D = AC");
+				
 				//Enviar o resultado para o registrador A
 				sinal[16] = 1;
 				sinal[mapaDeRegistradoresEntrada.get("A")] = 1;
 				
-				InterpretadorSinais.setSinal(sinal);
-				InterpretadorSinais.interpretar();
+				DevolverSinalParaUC(sinal);
 				
 				sinal = Uc.zeraTudo(64);
 			}
@@ -280,11 +302,15 @@ public class TradutorDeInstrucoes {
 				//Se o segundo também for uma letra ou então um número
 				if(Character.isLetter(registrador2.charAt(0)) || Character.isDigit(registrador2.charAt(0)) || registrador2.charAt(0) == '-')
 				{
+					//Imprimir microinstrução simplificada
+					Uc.insertMicroAppend("     t1: "+ registrador +" = " + registrador2);
+					
 					//E se a segunda letra também iniciar como maiúscula
 					if(Character.isLetter(registrador2.charAt(0)) && Character.isUpperCase(registrador2.charAt(0)))
 					{
 						//É um MOV de registrador pra registrador
 						//Esse MOV é Bem Simples, basta abrir as portas dos registradores
+						
 						//Abrir a porta de entrada do registrador 1
 						sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 						
@@ -292,8 +318,7 @@ public class TradutorDeInstrucoes {
 						sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
 						
 						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 						return;
@@ -311,8 +336,7 @@ public class TradutorDeInstrucoes {
 						sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 						
 						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 						return;
@@ -333,8 +357,7 @@ public class TradutorDeInstrucoes {
 						sinal[mapaDeRegistradoresSaida.get(registrador2)] = 1;
 						
 						//Executar sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 						
@@ -344,12 +367,9 @@ public class TradutorDeInstrucoes {
 						sinal[31] = 1;
 					}
 					else
-					{
-						//Pegar o valor em Hexa
-						registrador2 = Integer.toString(Integer.parseInt(registrador2, 16));
-						
+					{					
 						//1º Sinal - Pôr o endereço no barramento e pedir para enviá-lo à memória
-						sinal[32] = Integer.parseInt(registrador2);
+						sinal[32] = Integer.parseInt(registrador2, 16);
 						
 						//Controle de JMP para pôr o endereço no barramento
 						sinal[30] = 1;
@@ -362,8 +382,10 @@ public class TradutorDeInstrucoes {
 					//Enviar o endereço pra memória
 					sinal[20] = 1;
 					
-					InterpretadorSinais.setSinal(sinal);
-					InterpretadorSinais.interpretar();
+					//Imprimir microinstrução relacionada
+					Uc.insertMicroAppend("     t1: MAR = " + registrador2);
+					
+					DevolverSinalParaUC(sinal);
 					
 					sinal = Uc.zeraTudo(64);
 					
@@ -378,9 +400,11 @@ public class TradutorDeInstrucoes {
 					//Abrir a porta do barramento externo para o MBR
 					sinal[18] = 1;
 					
+					//Imprimir microinstrução da leitura da memória
+					Uc.insertMicroAppend("     t2: MBR = (Memória)");
+					
 					//Executar
-					InterpretadorSinais.setSinal(sinal);
-					InterpretadorSinais.interpretar();
+					DevolverSinalParaUC(sinal);
 					
 					sinal = Uc.zeraTudo(64);
 					
@@ -391,9 +415,11 @@ public class TradutorDeInstrucoes {
 					//Abrir a porta de entrada do registrador
 					sinal[mapaDeRegistradoresEntrada.get(registrador)] = 1;
 					
+					//Imprimir microinstrução da transferência para registrador
+					Uc.insertMicroAppend("     t3: "+registrador+" = MBR");
+					
 					//Executar
-					InterpretadorSinais.setSinal(sinal);
-					InterpretadorSinais.interpretar();
+					DevolverSinalParaUC(sinal);
 					
 					sinal = Uc.zeraTudo(64);
 					return;
@@ -416,8 +442,7 @@ public class TradutorDeInstrucoes {
 					sinal[mapaDeRegistradoresSaida.get(registrador)] = 1;
 					
 					//Executar o sinal
-					InterpretadorSinais.setSinal(sinal);
-					InterpretadorSinais.interpretar();
+					DevolverSinalParaUC(sinal);
 					
 					sinal = Uc.zeraTudo(64);
 					
@@ -427,10 +452,8 @@ public class TradutorDeInstrucoes {
 				}
 				else
 				{
-					registrador = Integer.toString(Integer.parseInt(registrador, 16));
-					
 					//1 - Mandar o endereço
-					sinal[32] = Integer.parseInt(registrador);
+					sinal[32] = Integer.parseInt(registrador, 16);
 					sinal[30] = 1;
 				}
 				
@@ -438,9 +461,11 @@ public class TradutorDeInstrucoes {
 				sinal[12] = 1;
 				sinal[17] = 1;
 				
+				//Imprimir sinal de controle relacionado
+				Uc.insertMicroAppend("     t1: MAR = " + registrador);
+				
 				//Executar instrução
-				InterpretadorSinais.setSinal(sinal);
-				InterpretadorSinais.interpretar();
+				DevolverSinalParaUC(sinal);
 				
 				sinal = Uc.zeraTudo(64);
 				
@@ -448,6 +473,7 @@ public class TradutorDeInstrucoes {
 				//Se o segundo também for uma letra
 				if(Character.isLetter(registrador2.charAt(0)) || Character.isDigit(registrador2.charAt(0)))
 				{
+					
 					//E se a segunda letra também iniciar como maiúscula
 					if(Character.isLetter(registrador2.charAt(0)) && Character.isUpperCase(registrador2.charAt(0)))
 					{
@@ -466,9 +492,11 @@ public class TradutorDeInstrucoes {
 						//Mandar o dado para a memória
 						sinal[20] = 1;
 						
+						//Imprimir microinstrução -> MBR recebe conteúdo do registrador
+						Uc.insertMicroAppend("     t2: MBR = " + registrador2);
+						
 						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 						
@@ -476,9 +504,11 @@ public class TradutorDeInstrucoes {
 						sinal[26] = 1;
 						sinal[27] = 1;
 						
+						//Imprimir microinstrução -> Memória recebe o que está em MBR
+						Uc.insertMicroAppend("     t3: (Memória) = MBR");
+						
 						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 						return;
@@ -500,9 +530,11 @@ public class TradutorDeInstrucoes {
 						//Mandar o dado e o endereço para a memória
 						sinal[20] = 1;
 						
+						//Imprimir microinstrução -> MBR recebe uma constante
+						Uc.insertMicroAppend("     t2: MBR = " + registrador2);
+						
 						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 						
@@ -512,9 +544,11 @@ public class TradutorDeInstrucoes {
 						//Marcar escrita
 						sinal[27] = 1;
 						
+						//Imprimir microinstrução -> Memória recebe o que está em MBR
+						Uc.insertMicroAppend("     t3: (Memória) = MBR");
+						
 						//Mandar executar o sinal
-						InterpretadorSinais.setSinal(sinal);
-						InterpretadorSinais.interpretar();
+						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
 					}
@@ -548,8 +582,11 @@ public class TradutorDeInstrucoes {
 			
 			//Marcar a porta de entrada do X
 			sinal[14] = 1;
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			
+			//Imprimir microinstrução relacionada ao envio do primeiro registrador para a memória
+			Uc.insertMicroAppend("     t1: X = " + registrador);
+			
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			
@@ -574,8 +611,11 @@ public class TradutorDeInstrucoes {
 			}
 			sinal[14] = 1;
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			//Exibir microinstrução relacionada
+			Uc.insertMicroAppend("     t2: (ULA) AC = X");
+			Uc.insertMicroAppend("     t3: X = " + registrador2);
+			
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			
@@ -588,8 +628,11 @@ public class TradutorDeInstrucoes {
 			//Mandar o sinal de comparação
 			DevolveSinais(sinal, res[0]);
 			
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			//Exibir saída da comparação
+			Uc.insertMicroAppend("     t4: AC = AC - X");
+			Uc.insertMicroAppend("         (flags atualizadas)");
+
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			
@@ -606,8 +649,7 @@ public class TradutorDeInstrucoes {
 			sinal[8] = 1;
 			
 			//Executar instrucao
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
+			DevolverSinalParaUC(sinal);
 			
 			sinal = Uc.zeraTudo(64);
 			
@@ -620,10 +662,15 @@ public class TradutorDeInstrucoes {
 			//Abrir a porta do PC
 			sinal[9] = 1;
 				
+			//Iniciar exibição da microinstrução
+			Uc.micro = Uc.micro + "     t1: ";
+			
 			//Executar instrucao
-			InterpretadorSinais.setSinal(sinal);
-			InterpretadorSinais.interpretar();
-				
+			DevolverSinalParaUC(sinal);
+			
+			//Finalizar exibição da microinstrução de pulo
+			Uc.micro = Uc.micro + "PC = " + registrador;
+			
 			sinal = Uc.zeraTudo(64);
 			return;
 		}
@@ -647,5 +694,12 @@ public class TradutorDeInstrucoes {
 		sinal[29] = jumpInst[1];
 		sinal[30] = jumpInst[2];
 		sinal[31] = jumpInst[3];
+	}
+	
+	//Esse é o método que devolve os sinais de controle para
+	//que a UC possa executá-los.
+	public void DevolverSinalParaUC(Integer[] sinal)
+	{
+		Uc.interpretadorSinaisDeControle(sinal);
 	}
 }

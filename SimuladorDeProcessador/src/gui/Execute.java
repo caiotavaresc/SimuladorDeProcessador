@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
@@ -255,6 +257,25 @@ public class Execute {
 		JButton btnExecuteNext = new JButton("Executar Pr\u00F3xima Linha");
 		btnExecuteNext.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		btnExecuteNext.setBounds(584, 170, 165, 29);
+		
+		btnExecuteNext.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				//Executar as instruções
+				Controlador.executaInstrucoes();
+				
+				//Atualizar os campos
+				updateStates();
+				
+				//Colocar as microinstruções na saída
+				insertMicroinstrucoesAppend(Uc.micro);
+				
+				//Colocar os sinais de controle na saída
+				insertSinaisAppend(Uc.control);
+			}
+		});
+		
 		panelExecute.add(btnExecuteNext);
 		
 		JLabel lblMicroinstrues = new JLabel("Microinstru\u00E7\u00F5es");
@@ -264,7 +285,13 @@ public class Execute {
 		
 		textMicroinstructions = new JTextPane();
 		textMicroinstructions.setBounds(241, 253, 230, 136);
-		panelExecute.add(textMicroinstructions);
+		
+		//Inserir scroll vertical
+		JScrollPane textMicroinstructions2 = new JScrollPane(textMicroinstructions);
+		textMicroinstructions2.setBounds(241, 253, 230, 136);
+		
+		//panelExecute.add(textMicroinstructions);
+		panelExecute.add(textMicroinstructions2);
 		
 		JLabel lblSinaisDeControle = new JLabel("Sinais de Controle");
 		lblSinaisDeControle.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
@@ -273,7 +300,13 @@ public class Execute {
 		
 		textControlSinal = new JTextPane();
 		textControlSinal.setBounds(494, 253, 255, 136);
-		panelExecute.add(textControlSinal);
+		
+		//Inserir scroll vertical
+		JScrollPane textControlSinal2 = new JScrollPane(textControlSinal);
+		textControlSinal2.setBounds(494, 253, 255, 136);
+		
+		//Colocar a scroll na tela
+		panelExecute.add(textControlSinal2);
 		
 		JButton btnLimparMicro = new JButton("Limpar");
 		btnLimparMicro.addActionListener(new ActionListener() {
@@ -296,7 +329,12 @@ public class Execute {
 		textMemoryContent = new JTextArea();
 		textMemoryContent.setEditable(false);
 		textMemoryContent.setBounds(25, 89, 195, 174);
-		panelExecute.add(textMemoryContent);
+		
+		//Adicionar a scroll no objeto
+		JScrollPane textMemoryContent2 = new JScrollPane(textMemoryContent);
+		textMemoryContent2.setBounds(25, 89, 195, 174);
+		
+		panelExecute.add(textMemoryContent2);
 		
 		btnVoltarFrame = new JButton("Voltar");
 		btnVoltarFrame.addActionListener(new ActionListener() {
@@ -317,34 +355,59 @@ public class Execute {
 		String memory = "";
 		
 		for(int i = 0; i < Memoria.indice; i++)
-		{
 			memory = memory + content[i].toString() + "\n";
-			textMemoryContent.setText(memory);
-		}
+		
+		textMemoryContent.setText(memory);
+	}
+	
+	public void cleanFields()
+	{
+		// REGISTRADORES
+		textRegisterA.setText("");
+		textRegisterB.setText("");
+		textRegisterC.setText("");
+		textRegisterD.setText("");
+		
+		// UC
+		textCpuMAR.setText("");
+		textCpuMBR.setText("");
+		textCpuPC.setText("");
+		textCpuIR.setText("");
+		
+		// Flags
+		textFlagZero.setText("");
+		textFlagSinal.setText("");
+		
+		//Limpar saídas de microinstruções e sinais de controle
+		textMicroinstructions.setText("");
+		textControlSinal.setText("");
 	}
 	
 	public void updateStates(){
 		// REGISTRADORES
 		int tempAx = Registradores.getAX();
-		textRegisterA.setText(String.valueOf(tempAx));
+		textRegisterA.setText("x" + Integer.toHexString(tempAx));
 
 		int tempBx = Registradores.getBX();
-		textRegisterB.setText(String.valueOf(tempBx));
+		textRegisterB.setText("x" + Integer.toHexString(tempBx));
 		
 		int tempCx = Registradores.getCX();
-		textRegisterC.setText(String.valueOf(tempCx));
+		textRegisterC.setText("x" + Integer.toHexString(tempCx));
 		
 		int tempDx = Registradores.getDX();
-		textRegisterD.setText(String.valueOf(tempDx));
+		textRegisterD.setText("x" + Integer.toHexString(tempDx));
 		
 		// UC
 		int tempMAR = Uc.MAR;
-		textCpuMAR.setText(String.valueOf(tempMAR));
+		textCpuMAR.setText("x" + Integer.toHexString(tempMAR));
 		
-		textCpuMBR.setText(Uc.MBR.toString());
+		if(Uc.MBR instanceof Integer)
+			textCpuMBR.setText("x" + Integer.toHexString((Integer) Uc.MBR));
+		else
+			textCpuMBR.setText(Uc.MBR.toString());
 		
 		int tempPC = Uc.PC;
-		textCpuPC.setText(String.valueOf(tempPC));
+		textCpuPC.setText("x" + Integer.toHexString(tempPC));
 		
 		textCpuIR.setText(Uc.IR.toString());
 		
@@ -352,14 +415,16 @@ public class Execute {
 		int tempFlag = Uc.flag0;
 		textFlagZero.setText(String.valueOf(tempFlag));
 		
-		int tempFlagSignal = Uc.flag0;
+		int tempFlagSignal = Uc.flagSinal;
 		textFlagSinal.setText(String.valueOf(tempFlagSignal));
 	}
+	
 	public void insertMicroinstrucoesAppend(String instrucao){
 		String current = textMicroinstructions.getText();
 		current += (instrucao + "\n");
 		textMicroinstructions.setText(current);
 	}
+	
 	public void insertSinaisAppend(String sinal){
 		String current = textControlSinal.getText();
 		current += (sinal + "\n");

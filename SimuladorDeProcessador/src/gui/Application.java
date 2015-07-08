@@ -6,9 +6,11 @@ import java.awt.CardLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import interfaceControle.*;
 import simulador.*;
+import simulador.cpu.Uc;
 import java.awt.Font;
 import javax.swing.JRadioButton;
 import javax.swing.JButton;
@@ -95,6 +97,13 @@ public class Application {
 		lblExibioDados.setBounds(82, 19, 286, 22);
 		panelMemoryList.add(lblExibioDados);
 		
+		final JTextPane textMemoryContent = new JTextPane();
+		textMemoryContent.setBounds(82, 73, 286, 144);
+		
+		JScrollPane textMemoryContent2 = new JScrollPane(textMemoryContent);
+		textMemoryContent2.setBounds(82, 73, 286, 144);
+		panelMemoryList.add(textMemoryContent2);
+		
 		JButton btnVoltar = new JButton("Voltar");
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -114,13 +123,16 @@ public class Application {
 		
 		final JTextArea instructionAdd = new JTextArea();
 		instructionAdd.setBounds(76, 99, 278, 132);
-		panelAddInstruction.add(instructionAdd);
+		
+		JScrollPane instructionAdd2 = new JScrollPane(instructionAdd);
+		instructionAdd2.setBounds(76, 99, 278, 132);
+		
+		panelAddInstruction.add(instructionAdd2);
 		panelAddInstruction.setVisible(false);
 		
 		JButton btnAdicionar = new JButton("Adicionar");
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// VALIDAR INSTRUÇÃO - PENDENTE
 				if(instructionAdd.getText().length() > 0){
 					controlador.adicionaInstrucao(instructionAdd.getText());
 					JOptionPane.showMessageDialog(frame, "Instruções adicionadas com sucesso");
@@ -159,7 +171,7 @@ public class Application {
 		rdbtnAdicionarNovasInstrues.setBounds(39, 76, 203, 23);
 		panelMenu.add(rdbtnAdicionarNovasInstrues);
 		
-		JRadioButton rdbtnLimparAsInstrues = new JRadioButton("Limpar a memória");
+		JRadioButton rdbtnLimparAsInstrues = new JRadioButton("Reiniciar a Aplicação");
 		rdbtnLimparAsInstrues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setOption(2);
@@ -209,27 +221,27 @@ public class Application {
 					break;
 				case 2:
 					controlador.limpaMemoria();
+					controlador.zerarTudo();
+					execute.cleanFields();
+					JOptionPane.showMessageDialog(frame, "Sistema reiniciado com sucesso!", "Dados Limpos", JOptionPane.PLAIN_MESSAGE);
 					break;
 				case 3:
 					setExecuteScreen();
 					execute.frame.setVisible(true);
 					break;
 				case 4:
-					Object[] memoria = controlador.getMemoria();
+					Object[] content = controlador.getMemoria();
 					
-					JTextPane textMemoryContent = new JTextPane();
-					textMemoryContent.setBounds(82, 73, 286, 144);
-					panelMemoryList.add(textMemoryContent);
-					String memoryContent = "";
+					String memory = "";
 					
 					for(int i = 0; i < Memoria.indice; i++)
-					{
-						memoryContent = memoryContent + memoria[i].toString() + "\n";
-						textMemoryContent.setText(memoryContent);
-					}
+						memory = memory + content[i].toString() + "\n";
 					
-						panelMenu.setVisible(false);
-						panelMemoryList.setVisible(true);
+					textMemoryContent.setText(memory);
+					
+					panelMenu.setVisible(false);
+					panelMemoryList.setVisible(true);
+					
 					break;
 				case 5:
 					break;

@@ -6,15 +6,29 @@ import simulador.cpu.*;
 
 public class Controlador {
 
-	Scanner sc;
-	Memoria memory;
-	Uc uc;
+	static Scanner sc;
+	static Memoria memory;
+	static Uc uc;
 	
 	public Controlador()
 	{
 		sc = new Scanner(System.in);
 		memory = new Memoria();
 		uc = new Uc();
+		Registradores.inicializaRegistradores();
+	}
+	
+	//Método feito para reiniciar a aplicação
+	public void zerarTudo()
+	{
+		Uc.PC = 0;
+		Uc.IR = null;
+		Uc.MAR = 0;
+		Uc.MBR = null;
+		
+		Uc.flag0 = 0;
+		Uc.flagSinal = 0;
+		
 		Registradores.inicializaRegistradores();
 	}
 	
@@ -41,7 +55,7 @@ public class Controlador {
 		Memoria.clear();
 	}
 	
-	public void executaInstrucoes()
+	public static void executaInstrucoes()
 	{
 		uc.cicloDeInstrucao();
 	}

@@ -16,6 +16,9 @@ public class Uc {
 	//Flags Zero e de Sinal
 	public static int flag0, flagSinal;
 	
+	//Strings de Microinstruções e Sinais de Controle
+	public static String micro, control;
+	
 	//Inicializar toods os registradores como zero
 	public Uc()
 	{
@@ -28,23 +31,34 @@ public class Uc {
 		myCicle = 0;
 	}
 	
-	//Esse método interpretará o conteúdo do sinal de controle e tomará a decisão adequada
-	public void interpretadorSinaisDeControle(Integer[] sinal)
+	//O sinal de controle devolvido pelo Microprograma será enviado
+	//para o fluxo. Nesse caso, esse é o método que recebe o sinal e 
+	//manda para o fluxo, que é representado pela classe InterpretadorSinais
+	public static void interpretadorSinaisDeControle(Integer[] sinal)
 	{
 		InterpretadorSinais.setSinal(sinal);
 		InterpretadorSinais.interpretar();
+		
+		//Depois de executar o sinal, colocá-lo na saída apropriada
+		control = control + imprimirSinalDeControle(sinal) + "\n";
+		
 	}
 
 	//Método do ciclo de instrução - responsável por executar os ciclos
 	public void cicloDeInstrucao()
 	{
-		System.out.println("Ciclo de Instrução:");
-		System.out.println("-------------------");
+		micro = "";
+		control = "";
 		
-		System.out.println("Ciclo de Busca:");
+		micro = "Iniciando Ciclo de Instrução\n";
+		control = "Iniciando Ciclo de Instrução\n";
+				
+		micro = micro + "  Ciclo de Busca:\n";
+		control = control + "Ciclo de Busca:\n";
 		cicloDeBusca();
 		
-		System.out.println("Ciclo de Execução");
+		micro = micro + "  Ciclo de Execução:\n";
+		control = control + "Ciclo de Execução:\n";
 		cicloDeExecucao();
 	}
 	
@@ -57,7 +71,7 @@ public class Uc {
 		
 		instr = zeraTudo(64);
 		
-		//t1: MAR <- PC
+		micro = micro + "     t1: MAR <- PC\n";
 		instr[8] = 1; //Controlador de saída de PC
 		instr[12] = 1; //Controlador de entrada de MAR
 		
@@ -68,10 +82,11 @@ public class Uc {
 		instr[20] = 1;
 
 		//Executar a operação e zerar o sinal de controle
-		this.interpretadorSinaisDeControle(instr);
+		interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
 		
-		//t2: MBR <- Memória
+		micro = micro + "     t2: MBR <- Memória\n";
+		micro = micro + "         PC <- PC + 1\n";
 		//O barramento já está alimentado com o dado do próximo endereço, basta acessá-lo na memória e colocá-lo no MBR
 		instr[20] = 1;
 		instr[21] = 1;
@@ -81,17 +96,16 @@ public class Uc {
 		instr[26] = 1;
 		instr[27] = 0;
 		
-		this.interpretadorSinaisDeControle(instr);
+		interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
 		
-		//t3: PC <- PC + 1
-		//    IR <- MBR
+		micro = micro + "     t3: IR <- MBR\n";
 		
 		//Abrir a Saída do PC e a entrada do X
 		instr[8] = 1;
 		instr[14] = 1;
 		
-		this.interpretadorSinaisDeControle(instr);
+		interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
 
 		//Abrir a saída do X, a saída do AC e a entrada do PC
@@ -103,14 +117,14 @@ public class Uc {
 		//00001 - Incrementar
 		instr[25] = 1;
 		
-		this.interpretadorSinaisDeControle(instr);
+		interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
 		
 		//Abrir a saída do MBR e a entrada do IR
 		instr[10] = 1;
 		instr[13] = 1;
 		
-		this.interpretadorSinaisDeControle(instr);
+		interpretadorSinaisDeControle(instr);
 		instr = zeraTudo(64);
 	}
 	
@@ -121,14 +135,6 @@ public class Uc {
 		
 		//1 - TRADUZIR O QUE ESTÁ NO IR PARA SINAIS DE CONTROLE
 		tradutor.traduzInstrucao((String) IR);
-		
-		System.out.println("Registrador A: "+Registradores.AX);
-		System.out.println("Registrador B: "+Registradores.BX);
-		System.out.println("Registrador C: "+Registradores.CX);
-		System.out.println("Registrador D: "+Registradores.DX);
-		
-		System.out.println("Flag Zero: " + flag0);
-		System.out.println("Flag Sinal: " + flagSinal);
 	}
 	
 	//Método que retorna um novo array com o tamanho estipulado todo zerado
@@ -193,5 +199,24 @@ public class Uc {
 			flagSinal = 1;
 		else
 			flagSinal = 0;
+	}
+	
+	//----------------------------------------------------------------------
+	//Função para adicionar texto no fim
+	public static void insertMicroAppend(String microinst)
+	{
+		micro = micro + microinst + "\n";
+	}
+	
+	//Método que pega o conteúdo da palavra de controle e retorna como string
+	//Finalidade: Facilitar...
+	public static String imprimirSinalDeControle(Integer[] sinal)
+	{
+		String retorno = "";
+		
+			for(int i = 0; i < 33; i++)
+				retorno = retorno + sinal[i];
+			
+		return retorno;
 	}
 }

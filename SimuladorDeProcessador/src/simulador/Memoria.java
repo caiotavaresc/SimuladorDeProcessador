@@ -35,7 +35,12 @@ public class Memoria {
 		if(memoriaPrincipal[i] == null)
 			return "";
 		else
-			return (String) memoriaPrincipal[i];
+		{
+			if(memoriaPrincipal[i] instanceof Integer)
+				return Integer.toHexString((Integer) memoriaPrincipal[i]);
+			else
+				return (String) memoriaPrincipal[i];
+		}
 	}
 	
 	//Metodo que limpa as instrucoes das memorias
@@ -44,6 +49,8 @@ public class Memoria {
 		//memoriaPrincipal.clear();
 		for(int i = 0; i < memoriaPrincipal.length; i++)
 			memoriaPrincipal[i] = null;
+		
+		indice = 0;
 	}
 	
 	//Imprimir as instrucoes armazenadas em memoria

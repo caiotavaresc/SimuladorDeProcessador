@@ -55,6 +55,7 @@ public class Ula {
 		{
 			//Somar o que já está em AC com o que está em Dado
 			AC = AC + Dado;
+			Uc.micro = Uc.micro + "+ X\n";
 			return;
 		}
 		
@@ -62,6 +63,7 @@ public class Ula {
 		{
 			//Subtrair o que está em Dado do que já está em AC
 			AC = AC - Dado;
+			Uc.micro = Uc.micro + "- X\n";
 			return;
 		}
 		
@@ -69,6 +71,7 @@ public class Ula {
 		{
 			//Multiplicar o que está em Dado e o que está em AC e colocar o resultado em AC
 			AC = AC*Dado;
+			Uc.micro = Uc.micro + "* X\n";
 			return;
 		}
 		
@@ -81,6 +84,7 @@ public class Ula {
 			//Dividir o que está em AC pelo que está em DADO e colocar o resultado em AC
 			AC = AC%Dado;
 			Dado = temp/Dado;
+			Uc.micro = Uc.micro + "/ X\n";
 			return;
 		}
 		
