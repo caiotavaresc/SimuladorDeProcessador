@@ -20,11 +20,7 @@ public class Controlador {
 	
 	public void adicionaInstrucao(String instrucao)
 	{
-		System.out.println("Por favor digite a instrucao");
-		sc.nextLine();
-		String instr = sc.nextLine();
-		Memoria.setInstrucao(instr);
-		System.out.println("Instrucao adicionada com sucesso!");
+		Memoria.setInstrucao(instrucao);
 	}
 	
 	public void adicionaInstrucao()

@@ -39,7 +39,7 @@ public class Application {
 	/**
 	 * Launch the application.
 	 */
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		controlador = new Controlador();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -51,7 +51,7 @@ public class Application {
 				}
 			}
 		});
-	}*/
+	}
 
 	/**
 	 * Create the application.
@@ -87,6 +87,12 @@ public class Application {
 		panelMemoryList.add(lblExibioDados);
 		
 		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelMemoryList.setVisible(false);
+				panelMenu.setVisible(true);
+			}
+		});
 		btnVoltar.setBounds(166, 245, 117, 29);
 		panelMemoryList.add(btnVoltar);
 		
@@ -107,7 +113,7 @@ public class Application {
 			public void actionPerformed(ActionEvent e) {
 				// VALIDAR INSTRUÇÃO - PENDENTE
 				if(instructionAdd.getText().length() > 0){
-					//controlador.adicionaInstrucao(instructionAdd.getText());
+					controlador.adicionaInstrucao(instructionAdd.getText());
 					JOptionPane.showMessageDialog(frame, "Instrução adicionada com sucesso");
 					panelAddInstruction.setVisible(false);
 					panelMenu.setVisible(true);
@@ -143,7 +149,7 @@ public class Application {
 		rdbtnAdicionarNovasInstrues.setBounds(39, 76, 203, 23);
 		panelMenu.add(rdbtnAdicionarNovasInstrues);
 		
-		JRadioButton rdbtnLimparAsInstrues = new JRadioButton("Limpar as instru\u00E7\u00F5es da mem\u00F3ria");
+		JRadioButton rdbtnLimparAsInstrues = new JRadioButton("Limpar a memória");
 		rdbtnLimparAsInstrues.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setOption(2);
@@ -179,7 +185,7 @@ public class Application {
 				System.exit(1);
 			}
 		});
-		btnSair.setBounds(99, 257, 117, 29);
+		btnSair.setBounds(99, 244, 117, 29);
 		panelMenu.add(btnSair);
 		
 		JButton btnAvanar = new JButton("Avan\u00E7ar");
@@ -197,16 +203,6 @@ public class Application {
 				case 3:
 					break;
 				case 4:
-					/*List<Object> memoria = controlador.getMemoria();
-					Iterator<Object> it = memoria.iterator();
-					
-					JTextPane textMemoryContent = new JTextPane();
-					textMemoryContent.setBounds(82, 73, 286, 144);
-					panelMemoryList.add(textMemoryContent);
-					
-					while(it.hasNext())
-						textMemoryContent.setText(it.next().toString());*/
-					
 					Object[] memoria = controlador.getMemoria();
 					
 					JTextPane textMemoryContent = new JTextPane();
@@ -226,18 +222,8 @@ public class Application {
 				}
 			}
 		});
-		btnAvanar.setBounds(233, 257, 117, 29);
+		btnAvanar.setBounds(233, 244, 117, 29);
 		panelMenu.add(btnAvanar);
-		
-		JRadioButton rdbtnVisualizarOsSinais = new JRadioButton("Visualizar os sinais de controle da mem\u00F3ria");
-		rdbtnVisualizarOsSinais.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setOption(5);
-			}
-		});
-		buttonGroup.add(rdbtnVisualizarOsSinais);
-		rdbtnVisualizarOsSinais.setBounds(39, 213, 311, 23);
-		panelMenu.add(rdbtnVisualizarOsSinais);
 	
 	}
 	
