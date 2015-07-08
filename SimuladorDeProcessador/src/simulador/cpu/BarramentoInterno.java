@@ -1,3 +1,17 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe representa o barramento local que fica den-*
+ * tro do processador e é responsável por conectar os componentes    *
+ * internos entre si.
+ *********************************************************************/
+
 package simulador.cpu;
 
 //Barramento de dados interno da CPU
@@ -8,10 +22,14 @@ public class BarramentoInterno {
 	Integer[] SaidaBarramentoInterno;
 	
 	//Dado que circula no barramento
+	//LINHA DE DADOS
 	static Object Dado;
+	
+	//LINHA DE ENDEREÇOS
 	static int Endereco;
 		
 	//Incializar os arrays de controle
+	//Mapa de entradas e saídas do barramento - pra saber de onde veio/pra onde vai o dado
 	public BarramentoInterno()
 	{
 		EntradaBarramentoInterno = new Integer[7];
@@ -37,12 +55,13 @@ public class BarramentoInterno {
 		SaidaBarramentoInterno[8] = 7;
 	}
 	
-	//Método que escreve o dado
+	//Método que escreve o dado na linha de dados
 	public static void setDado(Object dado)
 	{
 		Dado = dado;
 	}
 	
+	//Método que escreve o endereço na linha de endereço
 	public static void setEndereco(int endereco)
 	{
 		Endereco = endereco;

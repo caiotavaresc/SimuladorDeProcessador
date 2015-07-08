@@ -1,3 +1,16 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe é responsável por fazer a comunicação      *
+ * entre o processador (sistema) e a interface gráfica (saída)       * 
+ *********************************************************************/
+
 package interfaceControle;
 
 import java.util.Scanner;
@@ -32,6 +45,7 @@ public class Controlador {
 		Registradores.inicializaRegistradores();
 	}
 	
+	//Esse método recebe o bloco de instruções e adiciona uma a uma na memória
 	public void adicionaInstrucao(String instrucao)
 	{
 		//Como as instruções podem vir com mais de uma linha, é preciso quebrá-las
@@ -41,79 +55,28 @@ public class Controlador {
 			Memoria.setInstrucao(instrucoes[i]);
 	}
 	
-	public void adicionaInstrucao()
-	{
-		System.out.println("Por favor digite a instrucao");
-		sc.nextLine();
-		String instrucao = sc.nextLine();
-		Memoria.setInstrucao(instrucao);
-		System.out.println("Instrucao adicionada com sucesso!");
-	}
-	
+	//Esse método pede para que a memória seja reinicializada
 	public void limpaMemoria()
 	{
 		Memoria.clear();
 	}
 	
+	//Esse método é responsável por chamar o ciclo de instrução do processador
+	//Para executar uma nova instrução na memória
 	public static void executaInstrucoes()
 	{
 		uc.cicloDeInstrucao();
 	}
 	
+	//Esse método exibe a memória no console - EM DESUSO
 	public void exibeMemoria()
 	{
 		Memoria.imprimeMemoria();
 	}
 	
+	//Esse método retorna o array da memória
 	public /*List<Object>*/ Object[] getMemoria()
 	{
 		return Memoria.memoriaPrincipal;
 	}
-	
-	public void telaInicial()
-	{
-		System.out.println("O que deseja fazer?");
-		System.out.println();
-		System.out.println("1 - Adicionar novas instrucoes a memoria");
-		System.out.println("2 - Limpar as instrucoes da memoria");
-		System.out.println("3 - Executar as instrucoes da memoria");
-		System.out.println("4 - Visualizar o estado atual das instrucoes na memoria");
-		System.out.println("5 - Visualizar os sinais de controle da memoria");
-		System.out.println("6 - Sair");
-		System.out.println();
-		
-		int saida = sc.nextInt();
-		
-		switch(saida)
-		{
-		case 1:
-//			adicionaInstrucao("Teste");
-			adicionaInstrucao();
-			break;
-		case 2:
-			limpaMemoria();
-			break;
-		case 3:
-			executaInstrucoes();
-			break;
-		case 4:
-			exibeMemoria();
-			break;
-		case 6:
-			System.out.println("Saindo...");;
-			break;
-		default:
-			System.out.println("Erro");	
-		}
-	}
-	
-	/*public static void main(String[] args) {
-		
-		Controlador cont = new Controlador();
-		
-		System.out.println("Seja bem-vindo!");
-		
-		while(true)
-			cont.telaInicial();
-	}*/
 }

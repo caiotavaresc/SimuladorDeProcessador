@@ -1,3 +1,17 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe representa o microprograma, software que   *
+ * fica dentro da memória ROM e é responsável por transformar os     *
+ * comandos da linguagem de montagem (Assembly) em sinais de controle*
+ *********************************************************************/
+
 package simulador.cpu;
 
 import java.util.*;
@@ -100,6 +114,20 @@ public class TradutorDeInstrucoes {
 		String[] res = instrucao.split(" ");
 		String registrador;
 		String registrador2;
+		
+		/*
+		 * PARA CADA INSTRUÇÃO (OPCODE) HÁ UM SINAL DE CONTROLE DIFERENTE SENDO ENVIADO PARA A MEMÓRIA
+		 * NOSSO SOFTWARE REAPROVEITA O FATO QUE ALGUNS OPCODES POSSUEM SINAIS BEM PARECIDOS, QUE SÓ
+		 * MUDAM ALGUMA COISA NA SUA NATUREZA. POR ISSO FORAM DESENVOLVIDOS OS MAPAS DE OPERAÇÕES DA ULA
+		 * E DE JUMP, QUE PROMOVEM O REUSO DE CODIGO, E PERMITEM QUE UM UNICO BLOCO GERE SINAIS DE CONTROLE
+		 * DIFERENTES PARA INSTRUÇÕES DIFERENTES ENTRE SI.
+		 * */
+		
+		/*
+		 * QUANDO UM SINAL É MONTADO, ELE IMEDIATAMENTE É DEVOLVIDO PARA A UC, QUE DEVE EXECUTÁ-LO
+		 * O TRABALHO DO MICROPROGRAMA CONTINUA DURANTE O CICLO DE EXECUÇÃO, DEVOLVENDO SINAIS DE 
+		 * CONTROLE PARA A UC.
+		 * */
 		
 		//Instrução INC
 		if(res[0].equals("INC"))
@@ -676,6 +704,8 @@ public class TradutorDeInstrucoes {
 		}
 	}
 	
+	//Método que recebe uma instrução e devolve, no sinal de controle
+	//os sinais correspondentes para que a ULA possa executar corretamente suas operações
 	public void DevolveSinais(Integer[] sinal, String instrucao)
 	{
 		Integer[] ulaInst = mapaDeInstrucoes.get(instrucao);
@@ -686,6 +716,8 @@ public class TradutorDeInstrucoes {
 		sinal[25] = ulaInst[3];
 	}
 	
+	//Método que recebe uma instrução e devolve, no sinal de controle
+	//os sinais correspondentes para que o fluxo de operações possa executar corretamente o jump.
 	public void DevolveSinaisJump(Integer[] sinal, String instrucao)
 	{
 		Integer[] jumpInst = mapaDeInstrucoesJump.get(instrucao);

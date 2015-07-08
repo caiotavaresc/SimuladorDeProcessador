@@ -1,3 +1,16 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe é responsável por construir a interface    *
+ * gráfica do programa.                                              * 
+ *********************************************************************/
+
 package gui;
 
 import java.awt.EventQueue;
@@ -130,6 +143,7 @@ public class Application {
 		panelAddInstruction.add(instructionAdd2);
 		panelAddInstruction.setVisible(false);
 		
+		//O Botão adicionar, quando pressionado, chama o método de adição da classe controlador
 		JButton btnAdicionar = new JButton("Adicionar");
 		btnAdicionar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -210,26 +224,33 @@ public class Application {
 		btnSair.setBounds(99, 244, 117, 29);
 		panelMenu.add(btnSair);
 		
+		//O botão avançar se comporta de maneiras distintas, de acordo com a opção que estiver selecionada
 		JButton btnAvanar = new JButton("Avan\u00E7ar");
 		btnAvanar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch(option)
 				{
 				case 1:
+					//Caso seja adicionar nova instrução, ele abre a tela de adição
 					panelMenu.setVisible(false);
 					panelAddInstruction.setVisible(true);
 					break;
 				case 2:
+					//Caso seja reiniciar a aplicação, ele chama os métodos responsáveis pela limpeza
+					//Dos controles internos, da memória, e dos dados que estão na interface gráfica
 					controlador.limpaMemoria();
 					controlador.zerarTudo();
 					execute.cleanFields();
 					JOptionPane.showMessageDialog(frame, "Sistema reiniciado com sucesso!", "Dados Limpos", JOptionPane.PLAIN_MESSAGE);
 					break;
 				case 3:
+					//Caso seja selecionada a opção de executar instruções da memória, é aberta a tela de execução
 					setExecuteScreen();
 					execute.frame.setVisible(true);
 					break;
 				case 4:
+					//Caso seja escolhida a opção de visualizar o conteúdo e instruções da memória
+					//as mesmas são carregadas, depois exibidas.
 					Object[] content = controlador.getMemoria();
 					
 					String memory = "";
@@ -243,9 +264,9 @@ public class Application {
 					panelMemoryList.setVisible(true);
 					
 					break;
-				case 5:
-					break;
 				default:
+					//Caso contrário, é exibida uma mensagem de erro.
+					JOptionPane.showMessageDialog(frame, "Escolha uma opção.", "Erro", JOptionPane.ERROR_MESSAGE);
 					System.out.println("Erro");	
 				}
 			}
@@ -260,6 +281,7 @@ public class Application {
 		this.option = option;
 	}
 	
+	//Método que manda o conteúdo da memória para a tela de execução das instruções
 	public void setExecuteScreen(){
 		execute.setMemoryContent(controlador.getMemoria());		
 	}

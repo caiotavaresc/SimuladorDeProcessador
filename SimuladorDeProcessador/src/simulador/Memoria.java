@@ -1,37 +1,47 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe é representa a memória principal numa      *
+ * arquitetura tradicional. Ela é conectada ao barramento de sistema * 
+ *********************************************************************/
+
 package simulador;
-import java.util.*;
 
 //A classe controladora sera responsavel pela interacoes com o usuario
 public class Memoria {
 	
 	//Memoria principal: Guarda tanto dados quanto instrucoes
-	public static List<Object> memoriaPrincipal2;
 	public static Object[] memoriaPrincipal;
+	
+	//Indice - Endereço da próxima instrução a ser gravada (quando o usuário adicionar novas instruções)
 	public static int indice;
+	
+	//Atributos de dado e endereço utilizado nas transações entre memória e barramento de sistema
 	public static Integer Endereco;
 	public static Object Dado;
 	
 	//Inicializar a memoria
 	public Memoria()
 	{
-		//memoriaPrincipal = new ArrayList<Object>(1000);
 		memoriaPrincipal = new Object[1000];
-		indice = 0;
-		
+		indice = 0;	
 	}
 	
 	//Metodo que escreve a instrucoes em Assembly e guarda na memoria os sinais traduzidos
 	public static void setInstrucao(String instrucao)
 	{
-		//memoriaPrincipal.add(instrucao);
 		memoriaPrincipal[indice++] = instrucao;
 	}
 	
-	//Metodo que pega a instrucao em Assembly
-	//Acho que nao vai servir pra nada, mas ja tinha feito...
+	//Metodo que pega o dado/instrução na memória e retorna como string
 	public static String getInstrucao(int i)
 	{
-		//return (String) memoriaPrincipal.get(i);
 		if(memoriaPrincipal[i] == null)
 			return "";
 		else
@@ -56,10 +66,6 @@ public class Memoria {
 	//Imprimir as instrucoes armazenadas em memoria
 	public static void imprimeMemoria()
 	{
-		//Iterator<Object> it = memoriaPrincipal.iterator();
-		
-		//while(it.hasNext())
-		//	System.out.println(it.next());
 		
 		for(int i = 0; i < indice; i++)
 			System.out.println(memoriaPrincipal[i]);
@@ -84,13 +90,11 @@ public class Memoria {
 	//---------------------METODOS DE LEITURA E ESCRITA--------------
 	public static void le()
 	{
-		//Dado = memoriaPrincipal.get(Endereco);
 		Dado = memoriaPrincipal[Endereco];
 	}
 	
 	public static void escreve()
 	{
-		//memoriaPrincipal.set(Endereco, Dado);
 		memoriaPrincipal[Endereco] = Dado;
 	}
 }

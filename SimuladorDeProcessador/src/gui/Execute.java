@@ -1,3 +1,17 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe é responsável por construir a a tela de    *
+ * execução do programa, que mostra os registradores, o estado das   *
+ * flags, as microinstruções e os sinais de controle.                * 
+ *********************************************************************/
+
 package gui;
 
 import java.awt.EventQueue;
@@ -40,32 +54,12 @@ public class Execute {
 	public JTextPane textMicroinstructions;
 	public JTextPane textControlSinal;
 	public JButton btnVoltarFrame;
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					Execute window = new Execute();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-	
-	/**
-	 * Create the application.
-	 */
+
 	public Execute() {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	//Método que inicializa o conteúdo do frame
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 793, 469);
@@ -102,6 +96,8 @@ public class Execute {
 		verifyDataInput.setColumns(10);
 		
 		JButton btnVerifyDataSend = new JButton("Ir");
+		
+	    //Botão "IR" - Exibe no campo "Dado" o conteúdo do endereço colocado no campo de endereço
 		btnVerifyDataSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String result = verifyData(verifyDataInput.getText());
@@ -258,6 +254,10 @@ public class Execute {
 		btnExecuteNext.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		btnExecuteNext.setBounds(584, 170, 165, 29);
 		
+		//O botão executar instruções
+		// 1 - Executa as instruções
+		// 2 - Atualiza o estado dos registradores e flags na interface
+		// 3 - Exibe na interface todas as microinstruções e sinais de controle
 		btnExecuteNext.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -308,6 +308,7 @@ public class Execute {
 		//Colocar a scroll na tela
 		panelExecute.add(textControlSinal2);
 		
+		//Esse botão limpa a janela de saída de microinstruções
 		JButton btnLimparMicro = new JButton("Limpar");
 		btnLimparMicro.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -317,6 +318,7 @@ public class Execute {
 		btnLimparMicro.setBounds(378, 221, 93, 29);
 		panelExecute.add(btnLimparMicro);
 		
+		//Esse botão limpa a janela de saída de sinais de controle
 		JButton buttonLimparSignal = new JButton("Limpar");
 		buttonLimparSignal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -336,6 +338,7 @@ public class Execute {
 		
 		panelExecute.add(textMemoryContent2);
 		
+		//O botão voltar leva para a tela principal
 		btnVoltarFrame = new JButton("Voltar");
 		btnVoltarFrame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -351,6 +354,7 @@ public class Execute {
 		return result;
 	}
 	
+	//O método setMemoryContent é responsável por colocar no TextArea as instruções que estão na memória
 	public void setMemoryContent(Object [] content){
 		String memory = "";
 		
@@ -360,6 +364,8 @@ public class Execute {
 		textMemoryContent.setText(memory);
 	}
 	
+	//O método cleanFields é responsável por zerar o estado dos registradores e flags
+	//na interface gráfica
 	public void cleanFields()
 	{
 		// REGISTRADORES
@@ -383,6 +389,8 @@ public class Execute {
 		textControlSinal.setText("");
 	}
 	
+	//O método updateStates atualiza o estado dos registradores e flags
+	//Depois da execução de cada microinstrução
 	public void updateStates(){
 		// REGISTRADORES
 		int tempAx = Registradores.getAX();
@@ -419,12 +427,16 @@ public class Execute {
 		textFlagSinal.setText(String.valueOf(tempFlagSignal));
 	}
 	
+	//O método insertMicroinstrucoesAppend adiciona uma string no fim do 
+	//TextArea de Microinstruções
 	public void insertMicroinstrucoesAppend(String instrucao){
 		String current = textMicroinstructions.getText();
 		current += (instrucao + "\n");
 		textMicroinstructions.setText(current);
 	}
 	
+	//O método insertSinaisAppend adiciona uma string no fim do 
+	//TextArea de Sinais de Controle
 	public void insertSinaisAppend(String sinal){
 		String current = textControlSinal.getText();
 		current += (sinal + "\n");

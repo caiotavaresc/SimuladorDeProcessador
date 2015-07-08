@@ -1,10 +1,26 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe representa a Unidade de Lógica e Aritmética*
+ * do processador, responsável por efetuar os diversos cálculos da   *
+ * aplicação.                                                        *
+ *********************************************************************/
+
 package simulador.cpu;
 
 //Unidade de Lógica e Aritmética, destinada a efetuar os cálculos
 //O único registrador que a ULA possui é o AC
 public class Ula {
 	
+	//Dado representa o Dado que está circulando na ULA.
 	static Integer Dado;
+	
 	static Integer AC;
 	
 	//Métodos para enviar dados para o barramento interno
@@ -18,7 +34,8 @@ public class Ula {
 		Dado = dado;
 	}
 	
-	//--------------------------Classe que define as operações da ULA-------------------------------
+	//--------------------------Método que define as operações da ULA-------------------------------
+	//de acordo com o sinal de controle que está sendo executado atualmente no fluxo de dados.
 	
 	public static void operacao(Integer[] sinal)
 	{

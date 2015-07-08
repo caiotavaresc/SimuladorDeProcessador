@@ -1,13 +1,32 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe representa a Unidade de Controle do proces-*
+ * sador, responsável pelo controle das operações que ocorrem no     *
+ * computador.                                                       *
+ *********************************************************************/
+
 package simulador.cpu;
 
 import simulador.*;
 
 //Por uma questão de organização, a UC conterá os registradores PC, IR, MAR e MBR
-//Porém a função da UC é apenas implementar os ciclos (busca, indireção e execução)
+//já que são de uso exclusivo dela, a função da UC é implementar os ciclos (busca e execução)
+//(O professor cancelou indireção).
 public class Uc {
 	
+	//Registradores da UC
 	public static int PC, MAR;
 	public static Object MBR, IR;
+	
+	//Referência para o microprograma que traduz as instruções e devolve
+	//os sinais de controle.
 	public static TradutorDeInstrucoes tradutor;
 	
 	//Variável que indica em qual ciclo o programa se encontra
@@ -135,6 +154,7 @@ public class Uc {
 		
 		//1 - TRADUZIR O QUE ESTÁ NO IR PARA SINAIS DE CONTROLE
 		tradutor.traduzInstrucao((String) IR);
+		//O tradutor devolve as instruções para a UC, que executa pontualmente cada uma.
 	}
 	
 	//Método que retorna um novo array com o tamanho estipulado todo zerado

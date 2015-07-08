@@ -1,3 +1,17 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe representa o fluxo de sinais de controle   *
+ * dentro do processador/barramento/memória. Ela interpreta os sinais*
+ * e manda os dados, simulando o que aconteceria num processador.    *
+ *********************************************************************/
+
 package simulador.cpu;
 
 import simulador.*;
@@ -45,7 +59,7 @@ public class InterpretadorSinais {
 		//Esses bits são utilizados para o cálculo de endereços, jumps e também para passar números diretamente
 		//para um registrador ou endereço de memória. Como o professor disse, a palavra deve ter a quantidade exata
 		//de bits, mas não precisamos ficar fazendo cálculos binários.
-		//Desse modo, estou mandando o valor inteiro na posição 32. Entenda que eles na verdade estariam em todas as
+		//Desse modo, estamos mandando o valor inteiro na posição 32. Entenda que eles na verdade estariam em todas as
 		//outras posições como binário.
 
 		switch(calculaConstantes())

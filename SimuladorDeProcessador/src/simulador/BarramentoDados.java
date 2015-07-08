@@ -1,3 +1,18 @@
+/*********************************************************************
+ *                     UNIVERSIDADE DE SÃO PAULO                     *
+ *               ESCOLA DE ARTES, CIÊNCIAS E HUMANIDADES             *
+ *-------------------------------------------------------------------*
+ * Caio Tavares Cruz - 8921840                                       *
+ * Humberto Rocha Pinheiro - 7556816                                 *
+ *-------------------------------------------------------------------*
+ * Exercício Programa de OCD - Simulador de Processador              *
+ *-------------------------------------------------------------------*
+ * Descrição: Essa classe representa o Barramento de Sistema de uma  *
+ * arquitetura comum. Nesse barramento existem duas linhas, uma de   *
+ * dados e outra de endereços, onde circulam endereços, dados e      *
+ * instruções.                                                       *
+ *********************************************************************/
+
 package simulador;
 
 import simulador.cpu.*;
@@ -6,16 +21,18 @@ import simulador.cpu.*;
 public class BarramentoDados {
 
 	//Dado que atualizado/pego na memória
+	//LINHA DE DADOS
 	public static Object Dado;
 	
 	//Endereço a ser atualizado/pego na memória
+	//LINHA DE ENDEREÇOS
 	public static int Endereco;
 	
 	//Mapa de portas de entrada e saída do barramento
 	public Integer[] barramentoExtEntradas;
 	public Integer[] barramentoExtSaidas;
 	
-	//Inicializar controles
+	//Inicializar mapas com as portas do barramento
 	public BarramentoDados()
 	{
 		barramentoExtEntradas = new Integer[3];

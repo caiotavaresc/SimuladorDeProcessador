@@ -1,6 +1,6 @@
 package simulador.cpu;
 
-//Classe que conter� os registradores AX, BX, CX, DX e X
+//Classe que conterá os registradores AX, BX, CX, DX e X
 public class Registradores {
 	
 	static Integer AX, BX, CX, DX, X;
@@ -15,12 +15,13 @@ public class Registradores {
 		X = 0;
 	}
 	
-	//-------------M�TODOS QUE ENVIAM O DADO DO BARRAMENTO PARA OS REGISTRADORES----------------
+	//-------------MÉTODOS QUE ENVIAM O DADO DOS REGISTRADORES PARA O BARRAMENTO / DEVOLVEM O CONTEÚDO DO REGISTRADOR----------------
 	
 	public void EnviarAXBarramento()
 	{
 		BarramentoInterno.setDado(AX);
 	}
+	
 	public static int getAX(){
 		return AX;
 	}
@@ -29,6 +30,7 @@ public class Registradores {
 	{
 		BarramentoInterno.setDado(BX);
 	}
+	
 	public static int getBX(){
 		return BX;
 	}
@@ -37,6 +39,7 @@ public class Registradores {
 	{
 		BarramentoInterno.setDado(CX);
 	}
+	
 	public static int getCX(){
 		return CX;
 	}
@@ -45,6 +48,7 @@ public class Registradores {
 	{
 		BarramentoInterno.setDado(DX);
 	}
+	
 	public static int getDX(){
 		return DX;
 	}
