@@ -35,8 +35,8 @@ public class Uc {
 	//Flags Zero e de Sinal
 	public static int flag0, flagSinal;
 	
-	//Strings de Microinstruções e Sinais de Controle
-	public static String micro, control;
+	//Strings de Microinstruções, Sinais de Controle e saída de erros.
+	public static String micro, control, erro;
 	
 	//Inicializar toods os registradores como zero
 	public Uc()
@@ -68,6 +68,7 @@ public class Uc {
 	{
 		micro = "";
 		control = "";
+		erro = null;
 		
 		micro = "Iniciando Ciclo de Instrução\n";
 		control = "Iniciando Ciclo de Instrução\n";
@@ -153,7 +154,18 @@ public class Uc {
 		myCicle = 2;
 		
 		//1 - TRADUZIR O QUE ESTÁ NO IR PARA SINAIS DE CONTROLE
-		tradutor.traduzInstrucao((String) IR);
+		try
+		{
+			tradutor.traduzInstrucao((String) IR);
+		}
+		catch (ArithmeticException e)
+		{
+			erro = "Erro: Divisão por zero";
+		}
+		catch (Exception e)
+		{
+			erro = "Erro: Instrução não reconhecida";
+		}
 		//O tradutor devolve as instruções para a UC, que executa pontualmente cada uma.
 	}
 	

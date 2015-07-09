@@ -103,8 +103,8 @@ public class TradutorDeInstrucoes {
 	}
 
 	//Método encarregado de ler e traduzir cada instrução passada na linha de comando
-	public void traduzInstrucao(String instrucao)
-	{	
+	public void traduzInstrucao(String instrucao) throws Exception
+	{			
 		Integer[] sinal = Uc.zeraTudo(64);
 		
 		//1 - Remover todas as vírgulas da instrução
@@ -579,6 +579,7 @@ public class TradutorDeInstrucoes {
 						DevolverSinalParaUC(sinal);
 						
 						sinal = Uc.zeraTudo(64);
+						return;
 					}
 				}
 			}
@@ -702,6 +703,8 @@ public class TradutorDeInstrucoes {
 			sinal = Uc.zeraTudo(64);
 			return;
 		}
+	
+		throw new Exception("Instrução não reconhecida");
 	}
 	
 	//Método que recebe uma instrução e devolve, no sinal de controle

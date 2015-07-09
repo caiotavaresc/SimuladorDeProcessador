@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTabbedPane;
@@ -61,7 +62,7 @@ public class Execute {
 
 	//Método que inicializa o conteúdo do frame
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("Executar Instruções");
 		frame.setBounds(100, 100, 849, 521);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -281,6 +282,11 @@ public class Execute {
 				
 				//Colocar os sinais de controle na saída
 				insertSinaisAppend(Uc.control);
+				
+				//Se a saída de erro contiver uma instrução, exibí-la
+				String erro = Uc.erro;
+				if(erro != null)
+						JOptionPane.showMessageDialog(frame, erro, "Erro", JOptionPane.ERROR_MESSAGE);
 			}
 		});
 		
@@ -419,15 +425,21 @@ public class Execute {
 		int tempMAR = Uc.MAR;
 		textCpuMAR.setText("x" + Integer.toHexString(tempMAR));
 		
-		if(Uc.MBR instanceof Integer)
-			textCpuMBR.setText("x" + Integer.toHexString((Integer) Uc.MBR));
+		if(Uc.MBR == null)
+			textCpuMBR.setText("");
 		else
-			textCpuMBR.setText(Uc.MBR.toString());
+			if(Uc.MBR instanceof Integer)
+				textCpuMBR.setText("x" + Integer.toHexString((Integer) Uc.MBR));
+			else
+				textCpuMBR.setText(Uc.MBR.toString());
 		
 		int tempPC = Uc.PC;
 		textCpuPC.setText("x" + Integer.toHexString(tempPC));
 		
-		textCpuIR.setText(Uc.IR.toString());
+		if(Uc.IR == null)
+			textCpuIR.setText("");
+		else
+			textCpuIR.setText(Uc.IR.toString());
 		
 		// Flags
 		int tempFlag = Uc.flag0;
